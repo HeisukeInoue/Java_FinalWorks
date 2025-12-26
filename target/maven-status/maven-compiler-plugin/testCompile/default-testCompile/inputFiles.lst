@@ -1,0 +1,2 @@
+/app/src/test/java/com/example/dockerapi/repository/UserRepositorytTest.java
+/app/src/test/java/com/example/dockerapi/service/UserServiceTest.java
