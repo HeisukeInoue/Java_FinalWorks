@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot - DockerApiApplication",
+      "request": "launch",
+      "mainClass": "com.example.dockerapi.DockerApiApplication",
+      "projectName": "demo",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot - Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    }
+  ]
+}
+
+
