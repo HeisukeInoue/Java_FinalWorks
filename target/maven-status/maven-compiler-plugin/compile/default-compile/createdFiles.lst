@@ -1,7 +1,10 @@
+com/example/dockerapi/model/Blog.class
 com/example/dockerapi/repository/UserRepository.class
+com/example/dockerapi/repository/BlogRepository.class
 com/example/dockerapi/controller/HelloController.class
 com/example/dockerapi/model/Order.class
 com/example/dockerapi/model/User.class
+com/example/dockerapi/controller/BlogController.class
 com/example/dockerapi/controller/UserController.class
 com/example/dockerapi/model/UserWithOrders.class
 com/example/dockerapi/DockerApiApplication.class
