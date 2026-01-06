@@ -20,7 +20,7 @@ public class BlogRepository {
         String sql = """
             SELECT id, talent_id, title, text, created_at, updated_at, deleted_at
             FROM blogs
-            WHERE id = ?
+            WHERE id = ? AND deleted_at IS NULL;
             """;
         
             RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
@@ -36,4 +36,14 @@ public class BlogRepository {
           return jdbcTemplate.queryForObject(sql, mapper, id);
     }
 
+    /*個別にブログ記事を削除する*/
+    public int deleteById(int id) {
+      String sql = """
+          UPDATE blogs
+          SET deleted_at = NOW()
+          WHERE id = ?
+          """;
+      
+      return jdbcTemplate.update(sql, id);
+    }
 }
