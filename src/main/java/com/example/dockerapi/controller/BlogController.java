@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.dockerapi.model.Blog;
-import com.example.dockerapi.repository.BlogRepository;
+import com.example.dockerapi.service.BlogService;
 
 @RestController
 @RequestMapping("/api/blogs")
 public class BlogController {
 
     @Autowired
-        private BlogRepository blogRepository;
+        private BlogService blogService;
 
     /*個別にブログ記事を取得・閲覧する */
     @GetMapping("/{id}")
     public ResponseEntity<?> getBlogById(@PathVariable int id) {
         try {
-            Blog blog = blogRepository.findById(id);
+            Blog blog = blogService.getBlogById(id);
             return ResponseEntity.ok(blog);
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,7 +33,7 @@ public class BlogController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBlogById(@PathVariable int id) {
         try {
-            int result = blogRepository.deleteById(id);
+            int result = blogService.deleteBlogById(id);
             if (result == 0){
                 return ResponseEntity.notFound().build();
             }
