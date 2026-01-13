@@ -47,7 +47,6 @@ public class BlogRepository {
           LIMIT ?
           OFFSET ?
           """;
-      
 
       RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
           rs.getInt("id"),
@@ -70,6 +69,27 @@ public class BlogRepository {
           WHERE deleted_at IS NULL
           """;
       return jdbcTemplate.queryForObject(sql, Long.class);    
+    }
+
+    /*ブログ記事を投稿する
+    public Blog postBlog(int talent_id, String title, String text) {
+      String sql = """
+          INSERT
+          INTO blogs(talent_id, title, text, created_at, updated_at, deleted_at)
+          VALUES (?, ?, ?, NOW(), NULL, NULL)
+          """;
+    
+      
+    }*/
+
+    /*個別にブログ記事を更新する */
+    public int updateBlogs(String blogtitle, String blogtext, int blogid) {
+      String sql = """
+          UPDATE blogs
+          SET title = ?, text = ?, updated_at = NOW()
+          WHERE id = ?
+          """;
+      return jdbcTemplate.update(sql, blogtitle, blogtext, blogid);
     }
 
     /*個別にブログ記事を削除する*/
