@@ -1,5 +1,5 @@
 package com.example.dockerapi.controller;
-
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +47,18 @@ public class BlogController {
         try {
             BlogListResponse response = blogService.getBlogList(size, page);
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("エラーが発生しました");
+        }
+    }
+
+    /*新着順に5件ブログ記事を取得する*/
+    @GetMapping("/recommend")
+    public ResponseEntity<?> getRecentFiveBlogs(){
+        try {
+            List<Blog> result = blogService.getRecentFiveBlogs();
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("エラーが発生しました");
