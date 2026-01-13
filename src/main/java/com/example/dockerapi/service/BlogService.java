@@ -29,6 +29,10 @@ public class BlogService {
 
     }
 
+    public int updateBlogs(String blogtitle, String blogtext, int blogid) {
+        return blogRepository.updateBlogs(blogtitle, blogtext, blogid);
+    }
+
     public int deleteBlogById(int id) {
         return blogRepository.deleteById(id);
     }

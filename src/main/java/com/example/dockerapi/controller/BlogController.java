@@ -1,10 +1,13 @@
 package com.example.dockerapi.controller;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +46,25 @@ public class BlogController {
         try {
             BlogListResponse response = blogService.getBlogList(size, page);
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("エラーが発生しました");
+        }
+    }
+
+    /*個別にブログ記事を更新する*/
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBlogs(@RequestBody Map<String, String> request, @PathVariable int id) {
+        try {
+            String title = request.get("title");
+            String text = request.get("text");
+            int result = blogService.updateBlogs(title, text, id);
+            if (result == 0){
+                return ResponseEntity.notFound().build();
+            }
+            /*更新後のブログ記事を取得する*/
+            Blog updatedBlog = blogService.getBlogById(id);
+            return ResponseEntity.ok(updatedBlog);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("エラーが発生しました");
