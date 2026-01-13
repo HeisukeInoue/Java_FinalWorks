@@ -1,11 +1,15 @@
 package com.example.dockerapi.repository; //このクラスが属する**パッケージ（フォルダ階層）**の宣言。
-
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 /*import org.springframework.beans.factory.annotation.Autowired;*/ //フィールド注入は非推奨
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository; //Springに「このクラスはRepositoryです」と認識させ、DI対象にするアノテーション
 import com.example.dockerapi.model.Blog;
+
 
 @Repository
 public class BlogRepository {
@@ -71,16 +75,29 @@ public class BlogRepository {
       return jdbcTemplate.queryForObject(sql, Long.class);    
     }
 
-    /*ブログ記事を投稿する
-    public Blog postBlog(int talent_id, String title, String text) {
+    /*ブログ記事を投稿する*/
+    public Blog postNewBlogs(String title, String text) {
+
       String sql = """
-          INSERT
-          INTO blogs(talent_id, title, text, created_at, updated_at, deleted_at)
-          VALUES (?, ?, ?, NOW(), NULL, NULL)
+          INSERT INTO blogs(talent_id, title, text, created_at, updated_at, deleted_at)
+          VALUES (1, ?, ?, NOW(), NULL, NULL)
           """;
-    
-      
-    }*/
+  
+      KeyHolder keyHolder = new GeneratedKeyHolder();
+  
+      jdbcTemplate.update(connection -> {
+          PreparedStatement ps =
+              connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+          ps.setString(1, title);
+          ps.setString(2, text);
+          return ps;
+      }, keyHolder);
+  
+      Number key = keyHolder.getKey();
+      int id = (key == null) ? 0 : key.intValue();
+      // 作成されたブログを取得して返す
+      return findById(id);
+  }
 
     /*個別にブログ記事を更新する */
     public int updateBlogs(String blogtitle, String blogtext, int blogid) {
