@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,20 @@ public class BlogController {
         try {
             BlogListResponse response = blogService.getBlogList(size, page);
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("エラーが発生しました");
+        }
+    }
+
+    /*ブログ記事を投稿する*/
+    @PostMapping
+    public ResponseEntity<?> postNewBlogs(@RequestBody Map<String, String> request) {
+        try {
+            String title = request.get("title");
+            String text = request.get("text");
+            Blog newBlog = blogService.postNewBlogs(title, text);
+            return ResponseEntity.ok(newBlog);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("エラーが発生しました");
