@@ -1,17 +1,17 @@
 package com.example.dockerapi.dto;
 import java.util.List;
-import com.example.dockerapi.model.Blog;
+import com.example.dockerapi.model.blog;
 
-public class BlogListResponse {
+public class blogListResponse {
 
-    private List<Blog> blogs;
+    private List<blog> blogs;
     private int size;
     private int page;
     private long totalItems;
     private long totalPages;
 
-    public BlogListResponse(
-            List<Blog> blogs,
+    public blogListResponse(
+            List<blog> blogs,
             int page,
             int size,
             long totalItems,
@@ -24,7 +24,7 @@ public class BlogListResponse {
         this.totalPages = totalPages;
     }
 
-    public List<Blog> getBlogs() {
+    public List<blog> getblogs() {
         return blogs;
     }
 

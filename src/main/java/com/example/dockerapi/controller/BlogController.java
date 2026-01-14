@@ -1,6 +1,5 @@
 package com.example.dockerapi.controller;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,100 +11,106 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.dockerapi.dto.BlogListResponse;
-import com.example.dockerapi.model.Blog;
-import com.example.dockerapi.service.BlogService;
+import com.example.dockerapi.dto.apiResponse;
+import com.example.dockerapi.dto.blogListResponse;
+import com.example.dockerapi.dto.blogRequest;
+import com.example.dockerapi.model.blog;
+import com.example.dockerapi.service.blogService;
 
 @RestController
 @RequestMapping("/api/blogs")
-public class BlogController {
+public class blogController {
 
     @Autowired
-        private BlogService blogService;
+        private blogService blogService;
     /*個別にブログ記事を取得・閲覧する */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBlogById(@PathVariable int id) {
+    public ResponseEntity<apiResponse<blog>> getblogById(@PathVariable int id) {
         try {
-            Blog blog = blogService.getBlogById(id);
-            return ResponseEntity.ok(blog);
+            blog blog = blogService.getblogById(id);
+            if (blog == null) {
+                return ResponseEntity.status(404)
+                    .body(apiResponse.error("ブログが見つかりません"));
+            }
+            return ResponseEntity.ok(apiResponse.success(blog));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
-
+    
     /*指定のあったページindexをもとにブログ記事を取得する*/
     @GetMapping
-    public ResponseEntity<?> getBlogsByCurrentPage(
+    public ResponseEntity<apiResponse<blogListResponse>> getblogsByCurrentPage(
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "1") int page
     ) {
         try {
-            BlogListResponse response = blogService.getBlogList(size, page);
-            return ResponseEntity.ok(response);
+            blogListResponse response = blogService.getblogList(size, page);
+            return ResponseEntity.ok(apiResponse.success(response));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*新着順に5件ブログ記事を取得する*/
     @GetMapping("/recommend")
-    public ResponseEntity<?> getRecentFiveBlogs(){
+    public ResponseEntity<apiResponse<List<blog>>> getRecentFiveblogs(){
         try {
-            List<Blog> result = blogService.getRecentFiveBlogs();
-            return ResponseEntity.ok(result);
+            List<blog> result = blogService.getRecentFiveblogs();
+            return ResponseEntity.ok(apiResponse.success(result));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*ブログ記事を投稿する*/
     @PostMapping
-    public ResponseEntity<?> postNewBlogs(@RequestBody Map<String, String> request) {
+    public ResponseEntity<apiResponse<blog>> postNewblogs(@RequestBody blogRequest request) {
         try {
-            String title = request.get("title");
-            String text = request.get("text");
-            Blog newBlog = blogService.postNewBlogs(title, text);
-            return ResponseEntity.ok(newBlog);
+            String title = request.getTitle();
+            String text = request.getText();
+            blog newblog = blogService.postNewblogs(title, text);
+            return ResponseEntity.ok(apiResponse.success(newblog));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*個別にブログ記事を更新する*/
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBlogs(@RequestBody Map<String, String> request, @PathVariable int id) {
+    public ResponseEntity<apiResponse<blog>> updateblogs(@RequestBody blogRequest  request, @PathVariable int id) {
         try {
-            String title = request.get("title");
-            String text = request.get("text");
-            int result = blogService.updateBlogs(title, text, id);
+            String title = request.getTitle();
+            String text = request.getText();
+            int result = blogService.updateblogs(title, text, id);
             if (result == 0){
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(404).body(apiResponse.error("ブログが見つかりません"));
             }
             /*更新後のブログ記事を取得する*/
-            Blog updatedBlog = blogService.getBlogById(id);
-            return ResponseEntity.ok(updatedBlog);
+            blog updatedblog = blogService.getblogById(id);
+            return ResponseEntity.ok(apiResponse.success(updatedblog));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*個別にブログ記事を削除する*/
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBlogById(@PathVariable int id) {
+    public ResponseEntity<apiResponse<Void>> deleteblogById(@PathVariable int id) {
         try {
-            int result = blogService.deleteBlogById(id);
+            int result = blogService.deleteblogById(id);
             if (result == 0){
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(404).body(apiResponse.error("ブログが見つかりません"));
             }
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("エラーが発生しました");
+            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 

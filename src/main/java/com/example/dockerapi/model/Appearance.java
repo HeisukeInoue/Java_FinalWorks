@@ -2,7 +2,7 @@ package com.example.dockerapi.model;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
-public class Appearance {
+public class appearance {
     private int id;
     private int talentId;
     private Date date;
@@ -10,7 +10,7 @@ public class Appearance {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Appearance(int id, int talentId, Date date, String title,
+    public appearance(int id, int talentId, Date date, String title,
                 LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.talentId = talentId;
@@ -29,7 +29,7 @@ public class Appearance {
     public String getTitle() {
         return title; 
     }
-    public Date getdate() {
+    public Date getDate() {
         return date; 
     }
     public LocalDateTime getCreatedAt() {
