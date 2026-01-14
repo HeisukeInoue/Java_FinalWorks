@@ -90,4 +90,15 @@ public class AppearanceRepository {
             """;
         return jdbcTemplate.update(sql, date, title, text, id);
     }
+
+    /*出演情報を削除する*/
+    public int deleteAppearance(int id) {
+        String sql = """
+            UPDATE appearances
+            SET deleted_at = NOW()
+            WHERE id = ?
+            """;
+        
+        return jdbcTemplate.update(sql, id);
+    }
 }

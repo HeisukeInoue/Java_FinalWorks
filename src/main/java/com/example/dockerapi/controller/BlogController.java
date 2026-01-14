@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.dockerapi.dto.BlogListResponse;
 import com.example.dockerapi.model.Blog;
-import com.example.dockerapi.repository.BlogRepository;
 import com.example.dockerapi.service.BlogService;
 
 @RestController
@@ -23,9 +22,6 @@ public class BlogController {
 
     @Autowired
         private BlogService blogService;
-    @Autowired
-        private BlogRepository blogRepository;
-
     /*個別にブログ記事を取得・閲覧する */
     @GetMapping("/{id}")
     public ResponseEntity<?> getBlogById(@PathVariable int id) {

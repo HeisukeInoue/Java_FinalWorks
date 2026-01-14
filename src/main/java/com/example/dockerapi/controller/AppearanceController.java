@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +75,21 @@ public class AppearanceController {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.status(201).body("出演情報を更新しました");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("エラーが発生しました");
+        }
+    }
+
+    /*出演情報を削除する*/
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAppearance(@PathVariable int id) {
+        try {
+            int result = appearanceService.deleteAppearance(id);
+            if (result == 0){
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(201).body("出演情報を削除しました");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("エラーが発生しました");
