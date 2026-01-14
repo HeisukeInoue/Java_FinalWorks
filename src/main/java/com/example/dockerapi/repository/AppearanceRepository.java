@@ -80,4 +80,14 @@ public class AppearanceRepository {
             return ps;
         }, keyHolder);
     }
+
+    /*出演情報を編集する*/
+    public int updateAppearance(Date date, String title, String text, int id) {
+        String sql = """
+            UPDATE appearances
+            SET date = ?, title = ?, text = ?, updated_at = NOW()
+            WHERE id = ?
+            """;
+        return jdbcTemplate.update(sql, date, title, text, id);
+    }
 }

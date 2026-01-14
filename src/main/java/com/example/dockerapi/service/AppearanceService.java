@@ -23,4 +23,8 @@ public class AppearanceService {
     public void postNewAppearance(Date date, String title, String text){
         AppearanceRepository.postNewAppearance(date, title, text);
     }
+
+    public int updateAppearance(Date date, String title, String text, int id){
+        return AppearanceRepository.updateAppearance(date, title, text, id);
+    }
 }

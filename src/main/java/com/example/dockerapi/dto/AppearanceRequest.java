@@ -1,4 +1,4 @@
-/*出演情報投稿リクエストボディ用のDTO*/
+/*出演情報投稿&更新リクエストボディ用のDTO*/
 package com.example.dockerapi.dto;
 import java.sql.Date;
 

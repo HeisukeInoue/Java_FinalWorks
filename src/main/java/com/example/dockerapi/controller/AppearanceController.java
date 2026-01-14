@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,4 +61,23 @@ public class AppearanceController {
             return ResponseEntity.status(500).body("エラーが発生しました");
         }
     }
+
+    /*出演情報を編集する*/
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAppearance(@RequestBody AppearanceRequest request, @PathVariable int id) {
+        try {
+            Date date = request.getDate();
+            String title = request.getTitle();
+            String text = request.getText();
+            int result = appearanceService.updateAppearance(date, title, text, id);
+            if (result == 0){
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(201).body("出演情報を更新しました");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("エラーが発生しました");
+        }
+    }
+
 }
