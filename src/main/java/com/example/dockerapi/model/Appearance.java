@@ -1,24 +1,23 @@
 package com.example.dockerapi.model;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
-public class Blog {
+public class Appearance {
     private int id;
     private int talentId;
+    private Date date;
     private String title;
-    private String text;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
 
-    public Blog(int id, int talentId, String title, String text,
-                LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+    public Appearance(int id, int talentId, Date date, String title,
+                LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.talentId = talentId;
+        this.date = date;
         this.title = title;
-        this.text = text;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
     }
 
     public int getId() { 
@@ -30,16 +29,13 @@ public class Blog {
     public String getTitle() {
         return title; 
     }
-    public String getText() { 
-        return text; 
+    public Date getDate() {
+        return date; 
     }
     public LocalDateTime getCreatedAt() {
         return createdAt; 
     }
     public LocalDateTime getUpdatedAt() { 
         return updatedAt; 
-    }
-    public LocalDateTime getDeletedAt() { 
-        return deletedAt; 
     }
 }

@@ -26,7 +26,18 @@ public class BlogService {
             totalPages++;
         }
         return new BlogListResponse(blogs, page, size, totalItems, totalPages);
+    }
 
+    public List<Blog> getRecentFiveBlogs() {
+        return blogRepository.getRecentFiveBlogs();
+    }
+    
+    public Blog postNewBlogs(String blogtitle, String blogtext) {
+        return blogRepository.postNewBlogs(blogtitle, blogtext);
+    }
+
+    public int updateBlogs(String blogtitle, String blogtext, int blogid) {
+        return blogRepository.updateBlogs(blogtitle, blogtext, blogid);
     }
 
     public int deleteBlogById(int id) {
