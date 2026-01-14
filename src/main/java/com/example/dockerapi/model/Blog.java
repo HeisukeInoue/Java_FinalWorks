@@ -1,7 +1,7 @@
 package com.example.dockerapi.model;
 import java.time.LocalDateTime;
 
-public class blog {
+public class Blog {
     private int id;
     private int talentId;
     private String title;
@@ -10,7 +10,7 @@ public class blog {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    public blog(int id, int talentId, String title, String text,
+    public Blog(int id, int talentId, String title, String text,
                 LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.id = id;
         this.talentId = talentId;

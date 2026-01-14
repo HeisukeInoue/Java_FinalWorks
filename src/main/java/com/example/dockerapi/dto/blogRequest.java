@@ -1,6 +1,6 @@
 package com.example.dockerapi.dto;
 
-public class blogRequest {
+public class BlogRequest {
     private String title;
     private String text;
 

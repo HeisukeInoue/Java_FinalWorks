@@ -12,95 +12,95 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.dockerapi.dto.apiResponse;
-import com.example.dockerapi.dto.appearanceRequest;
-import com.example.dockerapi.model.appearance;
-import com.example.dockerapi.model.appearanceDetail;
-import com.example.dockerapi.service.appearanceService;
+import com.example.dockerapi.dto.ApiResponse;
+import com.example.dockerapi.dto.AppearanceRequest;
+import com.example.dockerapi.model.Appearance;
+import com.example.dockerapi.model.AppearanceDetail;
+import com.example.dockerapi.service.AppearanceService;
 
 @RestController
 @RequestMapping("/api/appearance")
-public class appearanceController {
+public class AppearanceController {
 
     @Autowired
-    private  appearanceService appearanceService;
+    private AppearanceService appearanceService;
 
     /*タレント出演情報の一覧を取得する*/
     @GetMapping
-    public ResponseEntity<apiResponse<List<appearance>>> getAllappearance() {
+    public ResponseEntity<ApiResponse<List<Appearance>>> getAllAppearance() {
         try {
-            List<appearance> appearance = appearanceService.getAllappearance();
-            return ResponseEntity.ok(apiResponse.success(appearance));
+            List<Appearance> appearance = appearanceService.getAllAppearance();
+            return ResponseEntity.ok(ApiResponse.success(appearance));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*タレント出演情報の詳細を取得する*/
     @GetMapping("/{id}")
-    public ResponseEntity<apiResponse<appearanceDetail>> getappearanceDetail(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<AppearanceDetail>> getAppearanceDetail(@PathVariable int id) {
         try {
-            appearanceDetail detail = appearanceService.getappearanceDetail(id);
+            AppearanceDetail detail = appearanceService.getAppearanceDetail(id);
             if (detail == null) {
-                return ResponseEntity.status(404).body(apiResponse.error("出演情報が見つかりません"));
+                return ResponseEntity.status(404).body(ApiResponse.error("出演情報が見つかりません"));
             }
-            return ResponseEntity.ok(apiResponse.success(detail));
+            return ResponseEntity.ok(ApiResponse.success(detail));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*タレント出演情報を投稿する*/
 @PostMapping
-public ResponseEntity<apiResponse<String>> postNewappearance(@RequestBody appearanceRequest request) {
+public ResponseEntity<ApiResponse<String>> postNewAppearance(@RequestBody AppearanceRequest request) {
     try {
         Date date = request.getDate();
         String title = request.getTitle();
         String text = request.getText();
-        appearanceService.postNewappearance(date, title, text);
-        return ResponseEntity.status(201).body(apiResponse.success("出演情報を登録しました"));
+        appearanceService.postNewAppearance(date, title, text);
+        return ResponseEntity.status(201).body(ApiResponse.success("出演情報を登録しました"));
     } catch (Exception e) {
         e.printStackTrace();
         return ResponseEntity.status(500)
-            .body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
+            .body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
     }
 }
 
     /*出演情報を編集する*/
     @PutMapping("/{id}")
-    public ResponseEntity<apiResponse<appearance>> updateappearance(@RequestBody appearanceRequest request, @PathVariable int id) {
+    public ResponseEntity<ApiResponse<AppearanceDetail>> updateAppearance(@RequestBody AppearanceRequest request, @PathVariable int id) {
         try {
             Date date = request.getDate();
             String title = request.getTitle();
             String text = request.getText();
-            int result = appearanceService.updateappearance(date, title, text, id);
+            int result = appearanceService.updateAppearance(date, title, text, id);
             if (result == 0){
-                return ResponseEntity.status(404).body(apiResponse.error("出演情報が見つかりません"));
+                return ResponseEntity.status(404).body(ApiResponse.error("出演情報が見つかりません"));
             }
-            appearance updated = appearanceService.getappearanceDetail(id);
-            return ResponseEntity.ok(apiResponse.success(updated));
+            AppearanceDetail updated = appearanceService.getAppearanceDetail(id);
+            return ResponseEntity.ok(ApiResponse.success(updated));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 
     /*出演情報を削除する*/
     @DeleteMapping("/{id}")
-    public ResponseEntity<apiResponse<Void>> deleteappearance(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<Void>> deleteAppearance(@PathVariable int id) {
         try {
-            int result = appearanceService.deleteappearance(id);
+            int result = appearanceService.deleteAppearance(id);
             if (result == 0){
                 return ResponseEntity.status(404)
-                    .body(apiResponse.error("出演情報が見つかりません"));
+                    .body(ApiResponse.error("出演情報が見つかりません"));
             }
-            return ResponseEntity.ok(apiResponse.success(null));
+            return ResponseEntity.ok(ApiResponse.success(null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500)
-                .body(apiResponse.error("エラーが発生しました: " + e.getMessage()));
+                .body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
 

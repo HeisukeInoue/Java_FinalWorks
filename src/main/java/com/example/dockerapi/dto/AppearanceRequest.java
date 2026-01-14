@@ -2,7 +2,7 @@
 package com.example.dockerapi.dto;
 import java.sql.Date;
 
-public class appearanceRequest {
+public class AppearanceRequest {
     private Date date;
     private String title;
     private String text;
