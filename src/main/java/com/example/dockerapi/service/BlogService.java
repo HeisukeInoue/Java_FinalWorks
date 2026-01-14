@@ -3,44 +3,44 @@ package com.example.dockerapi.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.dockerapi.dto.blogListResponse;
-import com.example.dockerapi.model.blog;
-import com.example.dockerapi.repository.blogRepository;
+import com.example.dockerapi.dto.BlogListResponse;
+import com.example.dockerapi.model.Blog;
+import com.example.dockerapi.repository.BlogRepository;
 
 @Service
-public class blogService {
+public class BlogService {
     
     @Autowired
-    private blogRepository blogRepository;
+    private BlogRepository blogRepository;
 
-    public blog getblogById(int id) {
+    public Blog getBlogById(int id) {
         return blogRepository.findById(id);
     }
 
-    public blogListResponse getblogList(int size, int page) {
+    public BlogListResponse getBlogList(int size, int page) {
         int offset = (page - 1) * size;
-        List<blog> blogs = blogRepository.getblogsByCurrentPage(size, offset);
-        long totalItems = blogRepository.getTotalblogCounts();
+        List<Blog> blogs = blogRepository.getBlogsByCurrentPage(size, offset);
+        long totalItems = blogRepository.getTotalBlogCounts();
         long totalPages = totalItems / size;
         if (totalItems % size != 0) {
             totalPages++;
         }
-        return new blogListResponse(blogs, page, size, totalItems, totalPages);
+        return new BlogListResponse(blogs, page, size, totalItems, totalPages);
     }
 
-    public List<blog> getRecentFiveblogs() {
-        return blogRepository.getRecentFiveblogs();
+    public List<Blog> getRecentFiveBlogs() {
+        return blogRepository.getRecentFiveBlogs();
     }
     
-    public blog postNewblogs(String blogtitle, String blogtext) {
-        return blogRepository.postNewblogs(blogtitle, blogtext);
+    public Blog postNewBlogs(String blogtitle, String blogtext) {
+        return blogRepository.postNewBlogs(blogtitle, blogtext);
     }
 
-    public int updateblogs(String blogtitle, String blogtext, int blogid) {
-        return blogRepository.updateblogs(blogtitle, blogtext, blogid);
+    public int updateBlogs(String blogtitle, String blogtext, int blogid) {
+        return blogRepository.updateBlogs(blogtitle, blogtext, blogid);
     }
 
-    public int deleteblogById(int id) {
+    public int deleteBlogById(int id) {
         return blogRepository.deleteById(id);
     }
 }

@@ -2,10 +2,10 @@ package com.example.dockerapi.model;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
-public class appearanceDetail extends appearance{
+public class AppearanceDetail extends Appearance{
     private String text;
 
-    public appearanceDetail(int id, int talentId, Date date, String title, String text,
+    public AppearanceDetail(int id, int talentId, Date date, String title, String text,
                 LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id, talentId, date, title, createdAt, updatedAt);
         this.text = text;

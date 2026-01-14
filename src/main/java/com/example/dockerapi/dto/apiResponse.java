@@ -1,20 +1,20 @@
 package com.example.dockerapi.dto;
 
-public class apiResponse<T> {
+public class ApiResponse<T> {
     private T data;
     private String error;
     
-    private apiResponse(T data, String error) {
+    private ApiResponse(T data, String error) {
         this.data = data;
         this.error = error;
     }
     
-    public static <T> apiResponse<T> success(T data) {
-        return new apiResponse<>(data, null);
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(data, null);
     }
     
-    public static <T> apiResponse<T> error(String error) {
-        return new apiResponse<>(null, error);
+    public static <T> ApiResponse<T> error(String error) {
+        return new ApiResponse<>(null, error);
     }
     
     public boolean isSuccess() {

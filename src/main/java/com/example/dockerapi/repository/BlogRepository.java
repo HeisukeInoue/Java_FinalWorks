@@ -7,27 +7,27 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository; //Springに「このクラスはRepositoryです」と認識させ、DI対象にするアノテーション
-import com.example.dockerapi.model.blog;
+import com.example.dockerapi.model.Blog;
 
 
 @Repository
-public class blogRepository {
+public class BlogRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public blogRepository(JdbcTemplate jdbcTemplate){
+    public BlogRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
     /*リクエストのあったidで個別にブログ記事を取得する*/
-    public blog findById(int id) {
+    public Blog findById(int id) {
         String sql = """
             SELECT id, talent_id, title, text, created_at, updated_at, deleted_at
             FROM blogs
             WHERE id = ? AND deleted_at IS NULL;
             """;
         
-          RowMapper<blog> mapper = (rs, rowNum) -> new blog(
+          RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
             rs.getInt("id"),
             rs.getInt("talent_id"),
             rs.getString("title"),
@@ -41,7 +41,7 @@ public class blogRepository {
     }
 
     /*指定のあったページindexをもとにブログ記事リストを取得する*/
-    public List<blog> getblogsByCurrentPage(int pageSize, int offSet) {
+    public List<Blog> getBlogsByCurrentPage(int pageSize, int offSet) {
       String sql = """
           SELECT id, talent_id, title, text, created_at, updated_at, deleted_at
           FROM blogs
@@ -51,7 +51,7 @@ public class blogRepository {
           OFFSET ?
           """;
 
-      RowMapper<blog> mapper = (rs, rowNum) -> new blog(
+      RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
           rs.getInt("id"),
           rs.getInt("talent_id"),
           rs.getString("title"),
@@ -65,7 +65,7 @@ public class blogRepository {
     }
 
     /*ブログ総件数を取得する*/
-    public Long getTotalblogCounts() {
+    public Long getTotalBlogCounts() {
       String sql = """
           SELECT COUNT(*)
           FROM blogs
@@ -75,7 +75,7 @@ public class blogRepository {
     }
 
     /*ブログ記事を投稿する*/
-    public blog postNewblogs(String title, String text) {
+    public Blog postNewBlogs(String title, String text) {
 
       String sql = """
           INSERT INTO blogs(talent_id, title, text, created_at, updated_at, deleted_at)
@@ -99,7 +99,7 @@ public class blogRepository {
   }
 
     /*個別にブログ記事を更新する */
-    public int updateblogs(String blogtitle, String blogtext, int blogid) {
+    public int updateBlogs(String blogtitle, String blogtext, int blogid) {
       String sql = """
           UPDATE blogs
           SET title = ?, text = ?, updated_at = NOW()
@@ -120,7 +120,7 @@ public class blogRepository {
     }
 
     /*レコメンド機能：新着順に5件ブログ記事を取得する*/
-    public List<blog> getRecentFiveblogs() {
+    public List<Blog> getRecentFiveBlogs() {
       String sql = """
           SELECT id, talent_id, title, text, created_at, updated_at, deleted_at
           FROM blogs
@@ -129,7 +129,7 @@ public class blogRepository {
           LIMIT 5
           """;
 
-      RowMapper<blog> mapper = (rs, rowNum) -> new blog(
+      RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
           rs.getInt("id"),
           rs.getInt("talent_id"),
           rs.getString("title"),

@@ -8,19 +8,19 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import com.example.dockerapi.model.appearance;
-import com.example.dockerapi.model.appearanceDetail; 
+import com.example.dockerapi.model.Appearance;
+import com.example.dockerapi.model.AppearanceDetail; 
 
 @Repository
-public class appearanceRepository {
+public class AppearanceRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public appearanceRepository(JdbcTemplate jdbcTemplate){
+    public AppearanceRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
     /*タレント出演情報の一覧を取得する*/
-    public List<appearance> getAllappearance() {
+    public List<Appearance> getAllAppearance() {
         String sql = """
             SELECT id, talent_id, date, title, created_at, updated_at
             FROM appearances
@@ -28,7 +28,7 @@ public class appearanceRepository {
             ORDER BY created_at DESC
             """;
   
-        RowMapper<appearance> mapper = (rs, rowNum) -> new appearance(
+        RowMapper<Appearance> mapper = (rs, rowNum) -> new Appearance(
             rs.getInt("id"),
             rs.getInt("talent_id"),
             rs.getDate("date"),
@@ -41,14 +41,14 @@ public class appearanceRepository {
       }
 
     /*出演情報の詳細を取得する*/
-    public appearanceDetail getappearanceDetail(int id) {
+    public AppearanceDetail getAppearanceDetail(int id) {
         String sql = """
             SELECT id, talent_id, date, title, text, created_at, updated_at
             FROM appearances
             WHERE deleted_at IS NULL AND id = ?
             """;
   
-        RowMapper<appearanceDetail> mapper = (rs, rowNum) -> new appearanceDetail(
+        RowMapper<AppearanceDetail> mapper = (rs, rowNum) -> new AppearanceDetail(
             rs.getInt("id"),
             rs.getInt("talent_id"),
             rs.getDate("date"),
@@ -58,11 +58,15 @@ public class appearanceRepository {
             rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null
         );
         
-        return jdbcTemplate.queryForObject(sql, mapper, id);    
+        try {
+            return jdbcTemplate.queryForObject(sql, mapper, id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
       }
 
     /*出演情報を投稿する*/
-    public void postNewappearance(Date date, String title, String text) {
+    public void postNewAppearance(Date date, String title, String text) {
 
         String sql = """
             INSERT INTO appearances(talent_id, date, title, text, created_at, updated_at)
@@ -82,7 +86,7 @@ public class appearanceRepository {
     }
 
     /*出演情報を編集する*/
-    public int updateappearance(Date date, String title, String text, int id) {
+    public int updateAppearance(Date date, String title, String text, int id) {
         String sql = """
             UPDATE appearances
             SET date = ?, title = ?, text = ?, updated_at = NOW()
@@ -92,7 +96,7 @@ public class appearanceRepository {
     }
 
     /*出演情報を削除する*/
-    public int deleteappearance(int id) {
+    public int deleteAppearance(int id) {
         String sql = """
             UPDATE appearances
             SET deleted_at = NOW()

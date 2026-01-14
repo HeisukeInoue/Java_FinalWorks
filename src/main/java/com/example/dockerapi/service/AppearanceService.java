@@ -3,32 +3,32 @@ import java.sql.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.dockerapi.model.appearance;
-import com.example.dockerapi.model.appearanceDetail;
-import com.example.dockerapi.repository.appearanceRepository;
+import com.example.dockerapi.model.Appearance;
+import com.example.dockerapi.model.AppearanceDetail;
+import com.example.dockerapi.repository.AppearanceRepository;
 
 @Service
-public class appearanceService {
+public class AppearanceService {
     @Autowired
-    private appearanceRepository appearanceRepository;
+    private AppearanceRepository appearanceRepository;
 
-    public List<appearance> getAllappearance(){
-        return appearanceRepository.getAllappearance();
+    public List<Appearance> getAllAppearance(){
+        return appearanceRepository.getAllAppearance();
     }
 
-    public appearanceDetail getappearanceDetail(int id){
-        return appearanceRepository.getappearanceDetail(id);
+    public AppearanceDetail getAppearanceDetail(int id){
+        return appearanceRepository.getAppearanceDetail(id);
     }
 
-    public void postNewappearance(Date date, String title, String text){
-        appearanceRepository.postNewappearance(date, title, text);
+    public void postNewAppearance(Date date, String title, String text){
+        appearanceRepository.postNewAppearance(date, title, text);
     }
 
-    public int updateappearance(Date date, String title, String text, int id){
-        return appearanceRepository.updateappearance(date, title, text, id);
+    public int updateAppearance(Date date, String title, String text, int id){
+        return appearanceRepository.updateAppearance(date, title, text, id);
     }
 
-    public int deleteappearance(int id){
-        return appearanceRepository.deleteappearance(id);
+    public int deleteAppearance(int id){
+        return appearanceRepository.deleteAppearance(id);
     }
 }
