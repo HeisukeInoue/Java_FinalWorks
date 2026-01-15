@@ -17,7 +17,6 @@ const appearanceContent = document.getElementById('appearanceContent');
 
 let currentPage = 1;
 let totalPages = 1;
-let isEditMode = false;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -49,7 +48,15 @@ async function loadblogList() {
 			throw new Error('ブログ一覧の取得に失敗しました');
 		}
 
-		const data = await response.json();
+		const apiResponse = await response.json();
+		
+		// ApiResponse.data から PagedResponse を取得
+		const data = apiResponse.data;
+		
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+		
 		totalPages = data.totalPages || 1;
 		displayblogList(data);
 		displayPagination(data);
@@ -67,7 +74,10 @@ async function loadblogList() {
 
 // ブログ一覧を表示
 function displayblogList(data) {
-	if (!data.blogs || data.blogs.length === 0) {
+	// PagedResponse の items からブログ一覧を取得
+	const blogs = data.items || data.blogs || [];
+	
+	if (blogs.length === 0) {
 		blogList.innerHTML = `
       <div class="col-12">
         <div class="card shadow-sm">
@@ -81,13 +91,11 @@ function displayblogList(data) {
 		return;
 	}
 
-	const html = data.blogs
+	const html = blogs
 		.map(
 			(blog) => `
         <div class="col-md-6">
-          <div class="card shadow-sm h-100 blog-card" onclick="window.location.href='detail.html?id=${
-						blog.id
-					}'" style="cursor: pointer; transition: transform 0.2s;">
+          <div class="card shadow-sm h-100 blog-card" onclick="window.location.href='detail.html?id=${blog.id}'" style="cursor: pointer; transition: transform 0.2s;">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title fw-bold mb-3">${escapeHtml(blog.title)}</h5>
               <div class="mt-auto">
@@ -204,20 +212,12 @@ function showNewblogForm() {
 	blogForm.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 編集フォームを表示
-function showEditblogForm(blog) {
-	isEditMode = true;
-	formTitle.textContent = 'ブログ編集';
-	blogIdInput.value = blog.id;
-	titleInput.value = blog.title;
-	textInput.value = blog.text;
-	blogForm.style.display = 'block';
-	blogForm.scrollIntoView({ behavior: 'smooth' });
-}
-
 // フォームを非表示
 function hideblogForm() {
 	blogForm.style.display = 'none';
+	blogIdInput.value = '';
+	titleInput.value = '';
+	textInput.value = '';
 }
 
 // フォーム送信処理
@@ -233,12 +233,8 @@ async function handleFormSubmit(e) {
 	}
 
 	try {
-		const id = blogIdInput.value;
-		const url = isEditMode ? `${API_BASE}/${id}` : API_BASE;
-		const method = isEditMode ? 'PUT' : 'POST';
-
-		const response = await fetch(url, {
-			method: method,
+		const response = await fetch(API_BASE, {
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -252,7 +248,7 @@ async function handleFormSubmit(e) {
 
 		hideblogForm();
 		loadblogList();
-		alert(isEditMode ? 'ブログを更新しました' : 'ブログを投稿しました');
+		alert('ブログを投稿しました');
 	} catch (error) {
 		alert(`エラー: ${error.message}`);
 		console.error('Error submitting form:', error);
@@ -273,7 +269,15 @@ async function loadappearances() {
 		if (!response.ok) {
 			throw new Error('出演情報の取得に失敗しました');
 		}
-		const appearances = await response.json();
+		const apiResponse = await response.json();
+		
+		// ApiResponse.data から出演情報リストを取得
+		const appearances = apiResponse.data || [];
+		
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+		
 		displayappearances(appearances);
 	} catch (error) {
 		appearanceContent.innerHTML = `
