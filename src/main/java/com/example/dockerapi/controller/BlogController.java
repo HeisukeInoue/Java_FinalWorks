@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.dockerapi.dto.ApiResponse;
-import com.example.dockerapi.dto.BlogListResponse;
 import com.example.dockerapi.dto.BlogRequest;
+import com.example.dockerapi.dto.CommentRequest;
+import com.example.dockerapi.dto.PagedResponse;
 import com.example.dockerapi.model.Blog;
+import com.example.dockerapi.model.Comment;
 import com.example.dockerapi.service.BlogService;
 
 @RestController
@@ -23,6 +25,7 @@ public class BlogController {
 
     @Autowired
         private BlogService blogService;
+
     /*個別にブログ記事を取得・閲覧する */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Blog>> getBlogById(@PathVariable int id) {
@@ -41,12 +44,12 @@ public class BlogController {
     
     /*指定のあったページindexをもとにブログ記事を取得する*/
     @GetMapping
-    public ResponseEntity<ApiResponse<BlogListResponse>> getBlogsByCurrentPage(
+    public ResponseEntity<ApiResponse<PagedResponse<Blog>>> getBlogsByCurrentPage(
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "1") int page
     ) {
         try {
-            BlogListResponse response = blogService.getBlogList(size, page);
+            PagedResponse<Blog> response = blogService.getBlogList(size, page);
             return ResponseEntity.ok(ApiResponse.success(response));
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,4 +116,68 @@ public class BlogController {
             return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     } 
+
+    /*指定したブログ記事のコメント一覧を取得する*/
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<ApiResponse<PagedResponse<Comment>>> getCommentsOfTheBlog(
+        @PathVariable int id,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "1") int page
+    ) {
+        try {
+            PagedResponse<Comment> response = blogService.getCommentsOfTheBlog(id, size, page);
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
+
+    /*指定したブログ記事にコメントを投稿する*/
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<ApiResponse<List<Comment>>> postNewComment(
+        @RequestBody CommentRequest request, 
+        @PathVariable int id
+    ) { 
+        try {
+            String text = request.getText();
+            String creator = request.getCreatedBy();
+            List<Comment> newCommentList = blogService.postNewComment(id, text, creator);
+            return ResponseEntity.ok(ApiResponse.success(newCommentList));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
+
+    /*指定したコメントを更新する*/
+    @PutMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<String>> updateComment(@RequestBody CommentRequest request, @PathVariable int commentId) {
+        try {
+            String text = request.getText();
+            //String creator = request.getCreatedBy();
+            int result = blogService.updateComment(text, commentId);
+            if (result == 0){
+                return ResponseEntity.status(404).body(ApiResponse.error("ブログが見つかりません"));
+            }
+            /*更新後のブログ記事を取得する
+            Comment updatedComment = blogService.getBlogById(id);*/
+            return ResponseEntity.ok(ApiResponse.success("コメントを編集しました"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
+
+    /*指定したコメントを削除する*/
+    @DeleteMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<List<Comment>>> deleteCommentById(@PathVariable int id, @PathVariable int commentId) {
+        try {
+            List<Comment> comment = blogService.deleteCommentById(id, commentId);
+            return ResponseEntity.ok(ApiResponse.success(comment));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
 }
