@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository; //Springに「このクラスはRepositoryです」と認識させ、DI対象にするアノテーション
 import com.example.dockerapi.model.Blog;
+import com.example.dockerapi.model.Comment;
 
 
 @Repository
@@ -140,5 +141,81 @@ public class BlogRepository {
       );
       
       return jdbcTemplate.query(sql, mapper);    
+    }
+
+    /**以下ブログコメント機能**/
+    /*指定したブログ記事のコメント一覧を取得する*/
+    public List<Comment> getCommentsOfTheBlog(int id, int pageSize, int offSet) {
+        String sql = """
+          SELECT id, blog_id, created_by, text, created_at, updated_at
+          FROM comments
+          WHERE blog_id = ? AND deleted_at IS NULL
+          ORDER BY created_at DESC
+          LIMIT ?
+          OFFSET ?
+          """;
+
+        RowMapper<Comment> mapper = (rs, rowNum) -> new Comment(
+            rs.getInt("id"),
+            rs.getInt("blog_id"),
+            rs.getString("created_by"),
+            rs.getString("text"),
+            rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
+            rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null
+        );
+
+        return jdbcTemplate.query(sql, mapper, id, pageSize, offSet);    
+    }
+
+    /*指定したブログ記事のコメント総件数を取得する*/
+    public Long getTotalCommentCounts(int id) {
+      String sql = """
+          SELECT COUNT(*)
+          FROM comments
+          WHERE blog_id = ? AND deleted_at IS NULL
+          """;
+      return jdbcTemplate.queryForObject(sql, Long.class, id);    
+    }
+
+    /*指定したブログ記事にコメントを投稿する*/
+    public List<Comment> postNewComment(int blogId, String text, String creator) {
+      String sql = """ 
+          INSERT INTO comments(blog_id, text, created_by, created_at)
+          VALUES (?, ?, ?, NOW())
+          """;
+
+      KeyHolder keyHolder = new GeneratedKeyHolder();
+
+      jdbcTemplate.update(connection -> {
+          PreparedStatement ps =
+              connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+          ps.setInt(1, blogId);        
+          ps.setString(2, text);    
+          ps.setString(3, creator);
+          return ps;
+      }, keyHolder);
+
+      return getCommentsOfTheBlog(blogId, 10, 0);
+    }
+
+    /*指定したブログ記事のコメントを更新する*/
+    public int updateComment(String text, int commentId) {
+      String sql = """
+      UPDATE comments
+      SET text = ?, updated_at = NOW() 
+      WHERE id = ? AND deleted_at IS NULL
+      """;
+      return jdbcTemplate.update(sql, text, commentId);
+    }
+
+    /*指定したコメントを削除する*/
+    public List<Comment> deleteCommentById(int id, int blogId) {
+      String sql = """
+          UPDATE comments
+          SET deleted_at = NOW()
+          WHERE id = ?
+          """;
+      jdbcTemplate.update(sql, id);
+      return getCommentsOfTheBlog(blogId, 10, 0);
     }
 }
