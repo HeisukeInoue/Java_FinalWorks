@@ -43,7 +43,6 @@ public class ProfileRepository {
             Timestamp createdAt = rs.getTimestamp("created_at");
             Timestamp updatedAt = rs.getTimestamp("updated_at");
             
-            
             return new Profile(
                 id,
                 imageLink,
