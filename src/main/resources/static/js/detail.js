@@ -7,24 +7,31 @@ const blogContent = document.getElementById('blogContent');
 const detailTitle = document.getElementById('detailTitle');
 const detailMeta = document.getElementById('detailMeta');
 const detailText = document.getElementById('detailText');
+const blogInfoDisplay = document.getElementById('blogInfoDisplay');
+const blogInfoEdit = document.getElementById('blogInfoEdit');
 const editBtn = document.getElementById('editBtn');
 const deleteBtn = document.getElementById('deleteBtn');
-
-// 編集フォーム要素
-const editForm = document.getElementById('editForm');
-const editFormElement = document.getElementById('editFormElement');
-const editBlogIdInput = document.getElementById('editBlogId');
-const editTitleInput = document.getElementById('editTitle');
-const editTextInput = document.getElementById('editText');
+const blogEditForm = document.getElementById('blogEditForm');
+const saveBlogBtn = document.getElementById('saveBlogBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
+const editTitle = document.getElementById('editTitle');
+const editText = document.getElementById('editText');
+const toggleCommentsBtn = document.getElementById('toggleCommentsBtn');
+const commentsSection = document.getElementById('commentsSection');
+const commentsLoading = document.getElementById('commentsLoading');
+const commentsList = document.getElementById('commentsList');
+const commentsPagination = document.getElementById('commentsPagination');
+const commentForm = document.getElementById('commentForm');
+const commentTextInput = document.getElementById('commentTextInput');
+const postCommentBtn = document.getElementById('postCommentBtn');
 
-// 現在のブログデータ
+// コメント関連の変数
+let currentBlogId = null;
 let currentBlog = null;
-
-// コメント関連
-let commentsVisible = false;
 let commentsPage = 1;
+let commentsTotalPages = 1;
 const commentsSize = 10;
+let commentsVisible = false;
 
 // URLパラメータからIDを取得
 function getblogIdFromUrl() {
@@ -41,6 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		return;
 	}
 
+	currentBlogId = parseInt(id);
 	await loadblogDetail(id);
 
 	// イベントリスナー
@@ -51,10 +59,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 	});
 	cancelEditBtn.addEventListener('click', hideEditForm);
-	editFormElement.addEventListener('submit', handleEditSubmit);
-
-	// コメント表示ボタン
-	document.getElementById('toggleCommentsBtn').addEventListener('click', toggleComments);
+	blogEditForm.addEventListener('submit', handleBlogUpdate);
+	toggleCommentsBtn.addEventListener('click', toggleComments);
+	commentForm.addEventListener('submit', handleCommentSubmit);
 });
 
 // ブログ詳細を取得
@@ -62,7 +69,6 @@ async function loadblogDetail(id) {
 	try {
 		loading.style.display = 'block';
 		blogContent.style.display = 'none';
-		editForm.style.display = 'none';
 
 		const response = await fetch(`${API_BASE}/${id}`);
 
@@ -90,7 +96,6 @@ async function loadblogDetail(id) {
 			return;
 		}
 
-		currentBlog = blog;
 		displayblogDetail(blog);
 	} catch (error) {
 		alert(`エラー: ${error.message}`);
@@ -103,6 +108,9 @@ async function loadblogDetail(id) {
 
 // ブログ詳細を表示
 function displayblogDetail(blog) {
+	// 現在のブログ情報を保存
+	currentBlog = blog;
+	
 	detailTitle.textContent = blog.title;
 	detailMeta.innerHTML = `
     <div class="mb-2">
@@ -121,58 +129,85 @@ function displayblogDetail(blog) {
 
 // 編集フォームを表示
 function showEditForm() {
-	if (!currentBlog) return;
-
-	editBlogIdInput.value = currentBlog.id;
-	editTitleInput.value = currentBlog.title;
-	editTextInput.value = currentBlog.text;
-
-	blogContent.style.display = 'none';
-	editForm.style.display = 'block';
-	editTitleInput.focus();
+	if (!currentBlog) {
+		alert('ブログ情報が読み込まれていません');
+		return;
+	}
+	
+	// 現在の値をフォームに設定
+	editTitle.value = currentBlog.title || '';
+	editText.value = currentBlog.text || '';
+	
+	// 表示/非表示を切り替え
+	blogInfoDisplay.style.display = 'none';
+	blogInfoEdit.style.display = 'block';
 }
 
 // 編集フォームを非表示
 function hideEditForm() {
-	editForm.style.display = 'none';
-	blogContent.style.display = 'block';
+	blogInfoDisplay.style.display = 'block';
+	blogInfoEdit.style.display = 'none';
 }
 
-// 編集フォーム送信処理
-async function handleEditSubmit(e) {
+// ブログを更新
+async function handleBlogUpdate(e) {
 	e.preventDefault();
-
-	const id = editBlogIdInput.value;
-	const title = editTitleInput.value.trim();
-	const text = editTextInput.value.trim();
-
-	if (!title || !text) {
-		alert('タイトルと本文を入力してください');
-		return;
-	}
-
+	
 	try {
-		const response = await fetch(`${API_BASE}/${id}`, {
+		saveBlogBtn.disabled = true;
+		saveBlogBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>保存中...';
+		
+		const blogData = {
+			title: editTitle.value.trim(),
+			text: editText.value.trim()
+		};
+		
+		// バリデーション
+		if (!blogData.title || !blogData.text) {
+			alert('タイトルと本文を入力してください');
+			saveBlogBtn.disabled = false;
+			saveBlogBtn.innerHTML = '<i class="bi bi-check"></i> 保存';
+			return;
+		}
+		
+		// エンドポイント: PUT /api/blogs/{id}
+		const response = await fetch(`${API_BASE}/${currentBlogId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ title, text }),
+			body: JSON.stringify(blogData),
 		});
-
+		
 		if (!response.ok) {
 			const apiResponse = await response.json();
-			throw new Error(apiResponse.error || '更新に失敗しました');
+			throw new Error(apiResponse.error || 'ブログの更新に失敗しました');
 		}
-
-		alert('ブログを更新しました');
-
-		// 更新後のデータを再取得して表示
-		await loadblogDetail(id);
-		hideEditForm();
+		
+		const apiResponse = await response.json();
+		
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+		
+		// 更新後のブログ情報を表示
+		const updatedBlog = apiResponse.data;
+		if (updatedBlog) {
+			displayblogDetail(updatedBlog);
+			hideEditForm();
+			alert('ブログを更新しました');
+		} else {
+			// 更新後の情報が取得できない場合は、再度読み込み
+			await loadblogDetail(currentBlogId);
+			hideEditForm();
+			alert('ブログを更新しました');
+		}
 	} catch (error) {
 		alert(`エラー: ${error.message}`);
 		console.error('Error updating blog:', error);
+	} finally {
+		saveBlogBtn.disabled = false;
+		saveBlogBtn.innerHTML = '<i class="bi bi-check"></i> 保存';
 	}
 }
 
@@ -184,7 +219,8 @@ async function deleteblog(id) {
 		});
 
 		if (!response.ok) {
-			throw new Error('削除に失敗しました');
+			const apiResponse = await response.json();
+			throw new Error(apiResponse.error || '削除に失敗しました');
 		}
 
 		alert('ブログを削除しました');
@@ -195,35 +231,27 @@ async function deleteblog(id) {
 	}
 }
 
-// コメント表示切り替え
+// コメントセクションの表示/非表示を切り替え
 function toggleComments() {
-	const commentsSection = document.getElementById('commentsSection');
-	const toggleBtn = document.getElementById('toggleCommentsBtn');
-
 	commentsVisible = !commentsVisible;
-
 	if (commentsVisible) {
 		commentsSection.style.display = 'block';
-		toggleBtn.innerHTML = '<i class="bi bi-chevron-up"></i> コメントを閉じる';
-		loadComments(getblogIdFromUrl(), 1);
+		toggleCommentsBtn.innerHTML = '<i class="bi bi-eye-slash"></i> コメントを隠す';
+		loadComments();
 	} else {
 		commentsSection.style.display = 'none';
-		toggleBtn.innerHTML = '<i class="bi bi-chevron-down"></i> コメントを見る';
+		toggleCommentsBtn.innerHTML = '<i class="bi bi-eye"></i> コメントを見る';
 	}
 }
 
 // コメント一覧を取得
-async function loadComments(blogId, page) {
-	const commentsLoading = document.getElementById('commentsLoading');
-	const commentsList = document.getElementById('commentsList');
-	const commentsPagination = document.getElementById('commentsPagination');
-
+async function loadComments() {
 	try {
 		commentsLoading.style.display = 'block';
 		commentsList.innerHTML = '';
 
 		const response = await fetch(
-			`${API_BASE}/${blogId}/comments?size=${commentsSize}&page=${page}`
+			`${API_BASE}/${currentBlogId}/comments?size=${commentsSize}&page=${commentsPage}`
 		);
 
 		if (!response.ok) {
@@ -231,13 +259,22 @@ async function loadComments(blogId, page) {
 		}
 
 		const apiResponse = await response.json();
-		const pagedResponse = apiResponse.data;
 
-		commentsPage = page;
-		displayComments(pagedResponse.items);
-		displayCommentsPagination(pagedResponse.totalPages, blogId);
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+
+		const data = apiResponse.data;
+		commentsTotalPages = data.totalPages || 1;
+
+		displayComments(data.items || []);
+		displayCommentsPagination(data);
 	} catch (error) {
-		commentsList.innerHTML = '<p class="text-muted">コメントの読み込みに失敗しました</p>';
+		commentsList.innerHTML = `
+			<div class="alert alert-danger" role="alert">
+				<i class="bi bi-exclamation-triangle"></i> エラー: ${error.message}
+			</div>
+		`;
 		console.error('Error loading comments:', error);
 	} finally {
 		commentsLoading.style.display = 'none';
@@ -246,57 +283,139 @@ async function loadComments(blogId, page) {
 
 // コメント一覧を表示
 function displayComments(comments) {
-	const commentsList = document.getElementById('commentsList');
-
 	if (!comments || comments.length === 0) {
-		commentsList.innerHTML = '<p class="text-muted">コメントはまだありません</p>';
+		commentsList.innerHTML = `
+			<div class="text-muted text-center py-3">
+				<i class="bi bi-chat"></i> コメントがありません
+			</div>
+		`;
 		return;
 	}
 
-	commentsList.innerHTML = comments
+	const html = comments
 		.map(
 			(comment) => `
-		<div class="border-bottom py-3">
-			<div class="d-flex justify-content-between align-items-start mb-2">
-				<strong class="text-primary"><i class="bi bi-person-circle"></i> ${escapeHtml(
-					comment.createdBy
-				)}</strong>
-				<small class="text-muted">${formatDate(comment.createdAt)}</small>
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start mb-2">
+						<div>
+							<strong class="text-primary">${escapeHtml(comment.createdBy || 'user')}</strong>
+							<small class="text-muted ms-2">
+								<i class="bi bi-calendar3"></i> ${formatDate(comment.createdAt)}
+							</small>
+						</div>
+					</div>
+					<p class="mb-0" style="white-space: pre-wrap;">${escapeHtml(comment.text || '')}</p>
+				</div>
 			</div>
-			<p class="mb-0" style="white-space: pre-wrap;">${escapeHtml(comment.text)}</p>
-		</div>
-	`
+		`
 		)
 		.join('');
+
+	commentsList.innerHTML = html;
 }
 
-// コメントページネーション
-function displayCommentsPagination(totalPages, blogId) {
-	const paginationContainer = document.getElementById('commentsPagination');
-	const paginationList = paginationContainer.querySelector('ul');
-
-	if (totalPages <= 1) {
-		paginationContainer.style.display = 'none';
+// コメントのページネーションを表示
+function displayCommentsPagination(data) {
+	if (!data.totalPages || data.totalPages <= 1) {
+		commentsPagination.innerHTML = '';
 		return;
 	}
 
-	paginationContainer.style.display = 'block';
-	paginationList.innerHTML = '';
+	const page = data.page || commentsPage;
+	commentsPage = page;
 
-	for (let i = 1; i <= totalPages; i++) {
-		const li = document.createElement('li');
-		li.className = `page-item ${i === commentsPage ? 'active' : ''}`;
-		li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-		li.addEventListener('click', (e) => {
-			e.preventDefault();
-			loadComments(blogId, i);
+	let html = '';
+
+	// 前へボタン
+	html += `
+		<button class="btn btn-outline-primary btn-sm me-2" 
+			onclick="goToCommentsPage(${page - 1}); return false;"
+			${page === 1 ? 'disabled' : ''}>
+			<i class="bi bi-chevron-left"></i> 前へ
+		</button>
+	`;
+
+	// ページ番号
+	html += `<span class="mx-2">ページ ${page} / ${data.totalPages}</span>`;
+
+	// 次へボタン
+	html += `
+		<button class="btn btn-outline-primary btn-sm ms-2" 
+			onclick="goToCommentsPage(${page + 1}); return false;"
+			${page === data.totalPages ? 'disabled' : ''}>
+			次へ <i class="bi bi-chevron-right"></i>
+		</button>
+	`;
+
+	commentsPagination.innerHTML = html;
+}
+
+// コメントページ移動（グローバルスコープで定義）
+window.goToCommentsPage = function(page) {
+	if (page < 1 || page > commentsTotalPages || page === commentsPage) {
+		return;
+	}
+	commentsPage = page;
+	loadComments();
+};
+
+// コメント投稿
+async function handleCommentSubmit(e) {
+	e.preventDefault();
+
+	const text = commentTextInput.value.trim();
+
+	if (!text) {
+		alert('コメントを入力してください');
+		return;
+	}
+
+	try {
+		postCommentBtn.disabled = true;
+		postCommentBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>投稿中...';
+
+		const response = await fetch(`${API_BASE}/${currentBlogId}/comments`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				text: text,
+				createdBy: 'user', // デフォルト値
+			}),
 		});
-		paginationList.appendChild(li);
+
+		if (!response.ok) {
+			const apiResponse = await response.json();
+			throw new Error(apiResponse.error || 'コメントの投稿に失敗しました');
+		}
+
+		const apiResponse = await response.json();
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+
+		// コメント入力欄をクリア
+		commentTextInput.value = '';
+
+		// コメント一覧を再読み込み
+		commentsPage = 1;
+		await loadComments();
+
+		alert('コメントを投稿しました');
+	} catch (error) {
+		alert(`エラー: ${error.message}`);
+		console.error('Error posting comment:', error);
+	} finally {
+		postCommentBtn.disabled = false;
+		postCommentBtn.innerHTML = '<i class="bi bi-send"></i> コメントを投稿';
 	}
 }
 
 // HTMLエスケープ
 function escapeHtml(text) {
+	if (!text) return '';
 	const div = document.createElement('div');
 	div.textContent = text;
 	return div.innerHTML;

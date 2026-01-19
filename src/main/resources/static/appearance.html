@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ブログ詳細</title>
+    <title>出演情報詳細</title>
     <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -29,33 +29,44 @@
     <div class="container py-4">
       <header class="d-flex justify-content-between align-items-center mb-5">
         <h1 class="h2 mb-0 fw-bold">
-          <i class="bi bi-file-text"></i> ブログ詳細
+          <i class="bi bi-calendar-event"></i> 出演情報詳細
         </h1>
         <button
           onclick="window.location.href='index.html'"
           class="btn btn-outline-secondary"
         >
-          <i class="bi bi-arrow-left me-2"></i>一覧に戻る
+          <i class="bi bi-arrow-left me-2"></i>トップに戻る
         </button>
       </header>
 
-      <div id="blogDetail">
+      <div id="appearanceDetail">
         <div id="loading" class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">読み込み中...</span>
           </div>
           <p class="mt-2 text-muted">読み込み中...</p>
         </div>
-        <div id="blogContent" style="display: none">
+        <div id="appearanceContent" style="display: none">
           <div class="card shadow-sm">
             <div class="card-body p-4 p-md-5">
-              <h2 id="detailTitle" class="h3 mb-4 fw-bold"></h2>
-              <div
-                id="detailMeta"
-                class="text-muted mb-4 pb-3 border-bottom"
-              ></div>
-              <!-- ブログ情報表示エリア -->
-              <div id="blogInfoDisplay">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 id="detailTitle" class="h3 mb-0 fw-bold"></h2>
+                <div class="d-flex gap-2">
+                  <button id="editBtn" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil"></i> 編集
+                  </button>
+                  <button id="deleteBtn" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i> 削除
+                  </button>
+                </div>
+              </div>
+              
+              <!-- 出演情報表示エリア -->
+              <div id="appearanceInfoDisplay">
+                <div
+                  id="detailMeta"
+                  class="text-muted mb-4 pb-3 border-bottom"
+                ></div>
                 <div
                   id="detailText"
                   class="mb-4"
@@ -65,19 +76,11 @@
                     font-size: 1.05rem;
                   "
                 ></div>
-                <div class="d-flex gap-2 pt-3 border-top">
-                  <button id="editBtn" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> 編集
-                  </button>
-                  <button id="deleteBtn" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> 削除
-                  </button>
-                </div>
               </div>
               
-              <!-- ブログ編集フォーム -->
-              <div id="blogInfoEdit" style="display: none;">
-                <form id="blogEditForm">
+              <!-- 出演情報編集フォーム -->
+              <div id="appearanceInfoEdit" style="display: none;">
+                <form id="appearanceEditForm">
                   <div class="mb-3">
                     <label for="editTitle" class="form-label">
                       <i class="bi bi-file-text"></i> タイトル
@@ -85,13 +88,19 @@
                     <input type="text" class="form-control" id="editTitle" required>
                   </div>
                   <div class="mb-3">
+                    <label for="editDate" class="form-label">
+                      <i class="bi bi-calendar3"></i> 日付
+                    </label>
+                    <input type="date" class="form-control" id="editDate" required>
+                  </div>
+                  <div class="mb-3">
                     <label for="editText" class="form-label">
-                      <i class="bi bi-card-text"></i> 本文
+                      <i class="bi bi-card-text"></i> 詳細
                     </label>
                     <textarea class="form-control" id="editText" rows="8" required></textarea>
                   </div>
                   <div class="d-flex gap-2">
-                    <button type="submit" id="saveBlogBtn" class="btn btn-primary">
+                    <button type="submit" id="saveAppearanceBtn" class="btn btn-primary">
                       <i class="bi bi-check"></i> 保存
                     </button>
                     <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary">
@@ -99,50 +108,6 @@
                     </button>
                   </div>
                 </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- コメントセクション -->
-          <div class="card shadow-sm mt-4">
-            <div class="card-body p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="h5 mb-0">
-                  <i class="bi bi-chat-dots"></i> コメント
-                </h3>
-                <button id="toggleCommentsBtn" class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-eye"></i> コメントを見る
-                </button>
-              </div>
-
-              <!-- コメント一覧 -->
-              <div id="commentsSection" style="display: none;">
-                <div id="commentsLoading" class="text-center py-3">
-                  <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">読み込み中...</span>
-                  </div>
-                </div>
-                <div id="commentsList" class="mb-4"></div>
-                <div id="commentsPagination" class="d-flex justify-content-center"></div>
-
-                <!-- コメント投稿フォーム -->
-                <div class="border-top pt-3 mt-4">
-                  <h5 class="mb-3">コメントを投稿</h5>
-                  <form id="commentForm">
-                    <div class="mb-3">
-                      <textarea
-                        id="commentTextInput"
-                        class="form-control"
-                        rows="3"
-                        placeholder="コメントを入力してください"
-                        required
-                      ></textarea>
-                    </div>
-                    <button type="submit" id="postCommentBtn" class="btn btn-primary">
-                      <i class="bi bi-send"></i> コメントを投稿
-                    </button>
-                  </form>
-                </div>
               </div>
             </div>
           </div>
@@ -156,6 +121,7 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
-    <script src="/js/detail.js"></script>
+    <script src="/js/appearance.js"></script>
   </body>
 </html>
+
