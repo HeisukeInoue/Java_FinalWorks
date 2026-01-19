@@ -257,13 +257,8 @@ async function handleFormSubmit(e) {
 		});
 
 		if (!response.ok) {
-			const apiResponse = await response.json();
-			throw new Error(apiResponse.error || '投稿に失敗しました');
-		}
-
-		const apiResponse = await response.json();
-		if (apiResponse.error) {
-			throw new Error(apiResponse.error);
+			const errorData = await response.text();
+			throw new Error(errorData || '投稿に失敗しました');
 		}
 
 		hideblogForm();
@@ -336,11 +331,7 @@ function displayappearances(appearances) {
 			const date = appearance.date || appearance.getdate || '';
 			const formattedDate = formatappearanceDate(date);
 			return `
-        <div class="appearance-item mb-3 pb-3 border-bottom" 
-             onclick="window.location.href='appearance.html?id=${appearance.id}'" 
-             style="cursor: pointer; transition: opacity 0.2s;"
-             onmouseover="this.style.opacity='0.7'" 
-             onmouseout="this.style.opacity='1'">
+        <div class="appearance-item mb-3 pb-3 border-bottom">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <h6 class="fw-bold mb-0 small">${escapeHtml(appearance.title || '')}</h6>
           </div>

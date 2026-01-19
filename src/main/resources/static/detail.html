@@ -54,95 +54,22 @@
                 id="detailMeta"
                 class="text-muted mb-4 pb-3 border-bottom"
               ></div>
-              <!-- ブログ情報表示エリア -->
-              <div id="blogInfoDisplay">
-                <div
-                  id="detailText"
-                  class="mb-4"
-                  style="
-                    white-space: pre-wrap;
-                    line-height: 1.8;
-                    font-size: 1.05rem;
-                  "
-                ></div>
-                <div class="d-flex gap-2 pt-3 border-top">
-                  <button id="editBtn" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> 編集
-                  </button>
-                  <button id="deleteBtn" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> 削除
-                  </button>
-                </div>
-              </div>
-              
-              <!-- ブログ編集フォーム -->
-              <div id="blogInfoEdit" style="display: none;">
-                <form id="blogEditForm">
-                  <div class="mb-3">
-                    <label for="editTitle" class="form-label">
-                      <i class="bi bi-file-text"></i> タイトル
-                    </label>
-                    <input type="text" class="form-control" id="editTitle" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="editText" class="form-label">
-                      <i class="bi bi-card-text"></i> 本文
-                    </label>
-                    <textarea class="form-control" id="editText" rows="8" required></textarea>
-                  </div>
-                  <div class="d-flex gap-2">
-                    <button type="submit" id="saveBlogBtn" class="btn btn-primary">
-                      <i class="bi bi-check"></i> 保存
-                    </button>
-                    <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary">
-                      <i class="bi bi-x"></i> キャンセル
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- コメントセクション -->
-          <div class="card shadow-sm mt-4">
-            <div class="card-body p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="h5 mb-0">
-                  <i class="bi bi-chat-dots"></i> コメント
-                </h3>
-                <button id="toggleCommentsBtn" class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-eye"></i> コメントを見る
+              <div
+                id="detailText"
+                class="mb-4"
+                style="
+                  white-space: pre-wrap;
+                  line-height: 1.8;
+                  font-size: 1.05rem;
+                "
+              ></div>
+              <div class="d-flex gap-2 pt-3 border-top">
+                <button id="editBtn" class="btn btn-primary">
+                  <i class="bi bi-pencil"></i> 編集
                 </button>
-              </div>
-
-              <!-- コメント一覧 -->
-              <div id="commentsSection" style="display: none;">
-                <div id="commentsLoading" class="text-center py-3">
-                  <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">読み込み中...</span>
-                  </div>
-                </div>
-                <div id="commentsList" class="mb-4"></div>
-                <div id="commentsPagination" class="d-flex justify-content-center"></div>
-
-                <!-- コメント投稿フォーム -->
-                <div class="border-top pt-3 mt-4">
-                  <h5 class="mb-3">コメントを投稿</h5>
-                  <form id="commentForm">
-                    <div class="mb-3">
-                      <textarea
-                        id="commentTextInput"
-                        class="form-control"
-                        rows="3"
-                        placeholder="コメントを入力してください"
-                        required
-                      ></textarea>
-                    </div>
-                    <button type="submit" id="postCommentBtn" class="btn btn-primary">
-                      <i class="bi bi-send"></i> コメントを投稿
-                    </button>
-                  </form>
-                </div>
+                <button id="deleteBtn" class="btn btn-danger">
+                  <i class="bi bi-trash"></i> 削除
+                </button>
               </div>
             </div>
           </div>
