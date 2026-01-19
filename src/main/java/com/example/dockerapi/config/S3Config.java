@@ -18,8 +18,7 @@ public class S3Config {
 	private String accessKey;
 	
 	@Value("${aws.secret-access-key}")
-	private String secretKey;
-	  
+	private String secretKey;	  
 	@Bean
 	public S3Client s3Client() {
 		return S3Client.builder()
