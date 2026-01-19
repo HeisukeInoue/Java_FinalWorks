@@ -160,8 +160,7 @@ public class BlogController {
             if (result == 0){
                 return ResponseEntity.status(404).body(ApiResponse.error("ブログが見つかりません"));
             }
-            /*更新後のブログ記事を取得する
-            Comment updatedComment = blogService.getBlogById(id);*/
+            
             return ResponseEntity.ok(ApiResponse.success("コメントを編集しました"));
         } catch (Exception e) {
             e.printStackTrace();
