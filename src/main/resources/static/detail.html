@@ -46,8 +46,6 @@
           </div>
           <p class="mt-2 text-muted">読み込み中...</p>
         </div>
-        
-        <!-- 詳細表示 -->
         <div id="blogContent" style="display: none">
           <div class="card shadow-sm">
             <div class="card-body p-4 p-md-5">
@@ -74,71 +72,6 @@
                 </button>
               </div>
             </div>
-          </div>
-          
-          <!-- コメントセクション -->
-          <div class="card shadow-sm mt-4">
-            <div class="card-body p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="h5 mb-0 fw-bold">
-                  <i class="bi bi-chat-dots"></i> コメント
-                </h3>
-                <button id="toggleCommentsBtn" class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-chevron-down"></i> コメントを見る
-                </button>
-              </div>
-              <div id="commentsSection" style="display: none">
-                <div id="commentsLoading" class="text-center py-3" style="display: none">
-                  <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">読み込み中...</span>
-                  </div>
-                </div>
-                <div id="commentsList"></div>
-                <div id="commentsPagination" class="mt-3" style="display: none">
-                  <nav aria-label="コメントページネーション">
-                    <ul class="pagination pagination-sm justify-content-center mb-0"></ul>
-                  </nav>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 編集フォーム -->
-        <div id="editForm" class="card shadow-sm" style="display: none">
-          <div class="card-body p-4 p-md-5">
-            <h2 class="h3 mb-4 fw-bold"><i class="bi bi-pencil"></i> ブログ編集</h2>
-            <form id="editFormElement">
-              <input type="hidden" id="editBlogId" value="" />
-              <div class="mb-3">
-                <label for="editTitle" class="form-label fw-semibold">タイトル</label>
-                <input
-                  type="text"
-                  id="editTitle"
-                  class="form-control form-control-lg"
-                  placeholder="ブログのタイトルを入力"
-                  required
-                />
-              </div>
-              <div class="mb-4">
-                <label for="editText" class="form-label fw-semibold">本文</label>
-                <textarea
-                  id="editText"
-                  class="form-control"
-                  rows="10"
-                  placeholder="ブログの本文を入力"
-                  required
-                ></textarea>
-              </div>
-              <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary px-4">
-                  <i class="bi bi-check-circle"></i> 更新
-                </button>
-                <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary px-4">
-                  キャンセル
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       </div>

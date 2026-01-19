@@ -17,6 +17,7 @@ const appearanceContent = document.getElementById('appearanceContent');
 
 let currentPage = 1;
 let totalPages = 1;
+let isEditMode = false;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -95,7 +96,9 @@ function displayblogList(data) {
 		.map(
 			(blog) => `
         <div class="col-md-6">
-          <div class="card shadow-sm h-100 blog-card" onclick="window.location.href='detail.html?id=${blog.id}'" style="cursor: pointer; transition: transform 0.2s;">
+          <div class="card shadow-sm h-100 blog-card" onclick="window.location.href='detail.html?id=${
+						blog.id
+					}'" style="cursor: pointer; transition: transform 0.2s;">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title fw-bold mb-3">${escapeHtml(blog.title)}</h5>
               <div class="mt-auto">
@@ -212,12 +215,20 @@ function showNewblogForm() {
 	blogForm.scrollIntoView({ behavior: 'smooth' });
 }
 
+// 編集フォームを表示
+function showEditblogForm(blog) {
+	isEditMode = true;
+	formTitle.textContent = 'ブログ編集';
+	blogIdInput.value = blog.id;
+	titleInput.value = blog.title;
+	textInput.value = blog.text;
+	blogForm.style.display = 'block';
+	blogForm.scrollIntoView({ behavior: 'smooth' });
+}
+
 // フォームを非表示
 function hideblogForm() {
 	blogForm.style.display = 'none';
-	blogIdInput.value = '';
-	titleInput.value = '';
-	textInput.value = '';
 }
 
 // フォーム送信処理
@@ -233,8 +244,12 @@ async function handleFormSubmit(e) {
 	}
 
 	try {
-		const response = await fetch(API_BASE, {
-			method: 'POST',
+		const id = blogIdInput.value;
+		const url = isEditMode ? `${API_BASE}/${id}` : API_BASE;
+		const method = isEditMode ? 'PUT' : 'POST';
+
+		const response = await fetch(url, {
+			method: method,
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -248,7 +263,7 @@ async function handleFormSubmit(e) {
 
 		hideblogForm();
 		loadblogList();
-		alert('ブログを投稿しました');
+		alert(isEditMode ? 'ブログを更新しました' : 'ブログを投稿しました');
 	} catch (error) {
 		alert(`エラー: ${error.message}`);
 		console.error('Error submitting form:', error);
