@@ -17,17 +17,17 @@ public class ProfileRepository {
 
     /*タレント個別プロフィールを取得（画像URL/その他プロフィール共に）*/
     public Profile getProfile(int id) {
-      String sql = """
-          SELECT id, image_link, name, age, `from`, height, hobby, created_at, updated_at
-          FROM talents
-          WHERE id = ? AND deleted_at IS NULL
-          """;
-      
-      try {
-          return jdbcTemplate.queryForObject(sql, profileRowMapper(), id);
-      } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-          return null;
-      }
+        String sql = """
+            SELECT id, image_link, name, age, `from`, height, hobby, created_at, updated_at
+            FROM talents
+            WHERE id = ? AND deleted_at IS NULL
+        """;
+
+        try {
+            return jdbcTemplate.queryForObject(sql, profileRowMapper(), id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     /*RowMapper*/
@@ -59,12 +59,12 @@ public class ProfileRepository {
 
     /*個別にプロフィール情報を編集する(画像以外)*/
     public int updateProfile(String image_link, String name, int age, String from, int height, String hobby, int id) {
-      String sql = """
-          UPDATE talents
-          SET image_link = ?, name = ?, age = ?, `from` = ?, height = ?, hobby = ?, updated_at = NOW()
-          WHERE id = ? AND deleted_at IS NULL
-          """;
-      return jdbcTemplate.update(sql, image_link, name, age, from, height, hobby, id);
+        String sql = """
+            UPDATE talents
+            SET image_link = ?, name = ?, age = ?, `from` = ?, height = ?, hobby = ?, updated_at = NOW()
+            WHERE id = ? AND deleted_at IS NULL
+            """;
+        return jdbcTemplate.update(sql, image_link, name, age, from, height, hobby, id);
     }
 
     /*プロフィール画像を更新する*/
