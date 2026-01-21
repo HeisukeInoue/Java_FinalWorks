@@ -208,13 +208,13 @@ public class BlogRepository {
     }
 
     /*指定したコメントを削除する*/
-    public List<Comment> deleteCommentById(int id, int blogId) {
+    public List<Comment> deleteCommentById(int blogId, int commentId) {
       String sql = """
           UPDATE comments
           SET deleted_at = NOW()
           WHERE id = ?
           """;
-      jdbcTemplate.update(sql, id);
+      jdbcTemplate.update(sql, commentId);
       return getCommentsOfTheBlog(blogId, 10, 0);
     }
 
