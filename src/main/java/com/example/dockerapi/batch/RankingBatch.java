@@ -40,6 +40,7 @@ public class RankingBatch {
                 .<BlogRankingData, BlogRankingData>chunk(5, transactionManager)
                 .reader(reader)
                 .writer(writer)
+                .allowStartIfComplete(true)
                 .build();
     }
 

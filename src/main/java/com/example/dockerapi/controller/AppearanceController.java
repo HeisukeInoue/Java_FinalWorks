@@ -103,5 +103,5 @@ public ResponseEntity<ApiResponse<String>> postNewAppearance(@RequestBody Appear
                 .body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
-
+    
 }
