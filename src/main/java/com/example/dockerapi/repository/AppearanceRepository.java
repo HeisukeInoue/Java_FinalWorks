@@ -27,7 +27,7 @@ public class AppearanceRepository {
             WHERE deleted_at IS NULL
             ORDER BY created_at DESC
             """;
-  
+
         RowMapper<Appearance> mapper = (rs, rowNum) -> new Appearance(
             rs.getInt("id"),
             rs.getInt("talent_id"),
