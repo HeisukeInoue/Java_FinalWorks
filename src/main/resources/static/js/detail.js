@@ -9,11 +9,22 @@ const detailMeta = document.getElementById('detailMeta');
 const detailText = document.getElementById('detailText');
 const editBtn = document.getElementById('editBtn');
 const deleteBtn = document.getElementById('deleteBtn');
+const editForm = document.getElementById('editForm');
+const blogFormElement = document.getElementById('blogFormElement');
+const editTitleInput = document.getElementById('editTitle');
+const editTextInput = document.getElementById('editText');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
 
 // URLパラメータからIDを取得
 function getblogIdFromUrl() {
 	const params = new URLSearchParams(window.location.search);
 	return params.get('id');
+}
+
+// URLパラメータから編集モードを取得
+function isEditMode() {
+	const params = new URLSearchParams(window.location.search);
+	return params.get('edit') === 'true';
 }
 
 // 初期化
@@ -28,15 +39,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 	await loadblogDetail(id);
 
 	// イベントリスナー
-	editBtn.addEventListener('click', () => {
-		window.location.href = `index.html?edit=${id}`;
-	});
-
+	editBtn.addEventListener('click', showEditForm);
 	deleteBtn.addEventListener('click', async () => {
 		if (confirm('このブログを削除しますか？')) {
 			await deleteblog(id);
 		}
 	});
+	cancelEditBtn.addEventListener('click', hideEditForm);
+	blogFormElement.addEventListener('submit', handleFormSubmit);
+
+	// 編集モードで開かれた場合
+	if (isEditMode()) {
+		showEditForm();
+	}
 });
 
 // ブログ詳細を取得
@@ -95,8 +110,60 @@ function displayblogDetail(blog) {
 		}
   `;
 	detailText.textContent = blog.text;
+	
+	// 編集フォームに値を設定
+	editTitleInput.value = blog.title || '';
+	editTextInput.value = blog.text || '';
+	
 	loading.style.display = 'none';
 	blogContent.style.display = 'block';
+}
+
+// 編集フォームを表示
+function showEditForm() {
+	editForm.style.display = 'block';
+	editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 編集フォームを非表示
+function hideEditForm() {
+	editForm.style.display = 'none';
+}
+
+// フォーム送信処理
+async function handleFormSubmit(e) {
+	e.preventDefault();
+
+	const id = getblogIdFromUrl();
+	const title = editTitleInput.value.trim();
+	const text = editTextInput.value.trim();
+
+	if (!title || !text) {
+		alert('タイトルと本文を入力してください');
+		return;
+	}
+
+	try {
+		const response = await fetch(`${API_BASE}/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ title, text }),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error || '更新に失敗しました');
+		}
+
+		hideEditForm();
+		await loadblogDetail(id);
+		alert('ブログを更新しました');
+	} catch (error) {
+		alert(`エラー: ${error.message}`);
+		console.error('Error updating blog:', error);
+	}
 }
 
 // ブログを削除

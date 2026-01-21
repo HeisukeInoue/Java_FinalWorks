@@ -335,7 +335,7 @@ function displayappearances(appearances) {
 			return `
         <div class="appearance-item mb-3 pb-3 border-bottom">
           <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="fw-bold mb-0 small">${escapeHtml(appearance.title || '')}</h6>
+            <h6 class="fw-bold mb-0 small" onclick="window.location.href='appearance.html?id=${appearance.id}'" style="cursor: pointer; color: #0d6efd;">${escapeHtml(appearance.title || '')}</h6>
           </div>
           <div class="text-muted">
             <i class="bi bi-calendar3 me-1"></i>
