@@ -17,7 +17,6 @@ import com.example.dockerapi.dto.CommentRequest;
 import com.example.dockerapi.dto.PagedResponse;
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
-import com.example.dockerapi.model.Ranking;
 import com.example.dockerapi.service.BlogService;
 
 @RestController
@@ -183,9 +182,9 @@ public class BlogController {
 
     /*ブログ記事のランキングを取得する*/
     @GetMapping("/ranking")
-    public ResponseEntity<ApiResponse<List<Ranking>>> getRankingOfTheBlog() {
+    public ResponseEntity<ApiResponse<List<Blog>>> getRankingOfTheBlog() {
         try {
-            List<Ranking> ranking = blogService.getRankingOfTheBlog();
+            List<Blog> ranking = blogService.getRankingOfTheBlog();
             return ResponseEntity.ok(ApiResponse.success(ranking));
         }
         catch (Exception e) {
