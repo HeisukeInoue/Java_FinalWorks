@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.example.dockerapi.dto.PagedResponse;
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
-import com.example.dockerapi.model.Ranking;
 import com.example.dockerapi.repository.BlogRepository;
 
 @Service
@@ -74,7 +73,7 @@ public class BlogService {
     }
 
     /*ブログ記事のランキングを取得する*/
-        public List<Ranking> getRankingOfTheBlog() {
+    public List<Blog> getRankingOfTheBlog() {
         return blogRepository.getRankingOfTheBlog();
     }
 }
