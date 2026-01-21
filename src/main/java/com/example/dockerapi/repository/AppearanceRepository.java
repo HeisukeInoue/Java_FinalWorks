@@ -27,7 +27,6 @@ public class AppearanceRepository {
             WHERE deleted_at IS NULL
             ORDER BY created_at DESC
             """;
-
         RowMapper<Appearance> mapper = (rs, rowNum) -> new Appearance(
             rs.getInt("id"),
             rs.getInt("talent_id"),
@@ -38,7 +37,7 @@ public class AppearanceRepository {
         );
         
         return jdbcTemplate.query(sql, mapper);    
-      }
+    }
 
     /*出演情報の詳細を取得する*/
     public AppearanceDetail getAppearanceDetail(int id) {
@@ -47,7 +46,7 @@ public class AppearanceRepository {
             FROM appearances
             WHERE deleted_at IS NULL AND id = ?
             """;
-  
+
         RowMapper<AppearanceDetail> mapper = (rs, rowNum) -> new AppearanceDetail(
             rs.getInt("id"),
             rs.getInt("talent_id"),
@@ -63,7 +62,7 @@ public class AppearanceRepository {
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             return null;
         }
-      }
+    }
 
     /*出演情報を投稿する*/
     public void postNewAppearance(Date date, String title, String text) {

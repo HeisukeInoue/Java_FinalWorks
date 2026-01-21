@@ -18,6 +18,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class RankingBatch {
 
+    //ランキング上位件数
+    private final int rankingCount = 5;
+
     @Autowired
     private JobRepository jobRepository;
 
@@ -37,7 +40,7 @@ public class RankingBatch {
     @Bean
     public Step rankingStep(ItemReader<BlogRankingData> reader, ItemWriter<BlogRankingData> writer) {
         return new StepBuilder("rankingStep", jobRepository)
-                .<BlogRankingData, BlogRankingData>chunk(5, transactionManager)
+                .<BlogRankingData, BlogRankingData>chunk(rankingCount, transactionManager)
                 .reader(reader)
                 .writer(writer)
                 .allowStartIfComplete(true)
