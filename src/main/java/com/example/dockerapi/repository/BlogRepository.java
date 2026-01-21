@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository; //Springに「このクラスはRepositoryです」と認識させ、DI対象にするアノテーション
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
-
+import com.example.dockerapi.model.Ranking;
 
 @Repository
 public class BlogRepository {
@@ -217,5 +217,27 @@ public class BlogRepository {
           """;
       jdbcTemplate.update(sql, id);
       return getCommentsOfTheBlog(blogId, 10, 0);
+    }
+
+    /*ブログ記事のランキングを取得する*/
+    public List<Ranking> getRankingOfTheBlog() {
+      String sql = """
+          SELECT id, `rank`, blog_id, comment_count, created_at, updated_at, deleted_at
+          FROM ranking
+          WHERE deleted_at IS NULL
+          ORDER BY `rank` ASC
+          """;
+      
+      RowMapper<Ranking> mapper = (rs, rowNum) -> new Ranking(
+          rs.getInt("id"),
+          rs.getInt("rank"),
+          rs.getInt("blog_id"),
+          rs.getInt("comment_count"),
+          rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
+          rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null,
+          rs.getTimestamp("deleted_at") != null ? rs.getTimestamp("deleted_at").toLocalDateTime() : null
+      );
+
+      return jdbcTemplate.query(sql, mapper);
     }
 }
