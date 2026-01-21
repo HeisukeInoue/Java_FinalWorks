@@ -71,7 +71,7 @@ public class RankingBatch {
         return items -> {
             String updateSql = """
                 UPDATE ranking 
-                SET blog_id = ?, comment_count = ?
+                SET blog_id = ?, comment_count = ?, updated_at = NOW()
                 WHERE id = ?
                 """;
             

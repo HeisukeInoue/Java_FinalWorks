@@ -17,6 +17,7 @@ import com.example.dockerapi.dto.CommentRequest;
 import com.example.dockerapi.dto.PagedResponse;
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
+import com.example.dockerapi.model.Ranking;
 import com.example.dockerapi.service.BlogService;
 
 @RestController
@@ -175,6 +176,19 @@ public class BlogController {
             List<Comment> comment = blogService.deleteCommentById(id, commentId);
             return ResponseEntity.ok(ApiResponse.success(comment));
         } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
+
+    /*ブログ記事のランキングを取得する*/
+    @GetMapping("/ranking")
+    public ResponseEntity<ApiResponse<List<Ranking>>> getRankingOfTheBlog() {
+        try {
+            List<Ranking> ranking = blogService.getRankingOfTheBlog();
+            return ResponseEntity.ok(ApiResponse.success(ranking));
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }

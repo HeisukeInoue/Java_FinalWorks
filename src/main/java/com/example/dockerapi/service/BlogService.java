@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.dockerapi.dto.PagedResponse;
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
+import com.example.dockerapi.model.Ranking;
 import com.example.dockerapi.repository.BlogRepository;
 
 @Service
@@ -66,8 +67,14 @@ public class BlogService {
     public int updateComment(String text, int commentId) {
         return blogRepository.updateComment(text, commentId);
     }
+
     /*指定したコメントを削除する*/
     public List<Comment> deleteCommentById(int id, int comment_id) {
         return blogRepository.deleteCommentById(id, comment_id);
+    }
+
+    /*ブログ記事のランキングを取得する*/
+        public List<Ranking> getRankingOfTheBlog() {
+        return blogRepository.getRankingOfTheBlog();
     }
 }
