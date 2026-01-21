@@ -25,9 +25,4 @@ public class ProfileService {
     public int updateImageLink(String url, int id) {
         return profileRepository.updateImageLink(url, id);
     }
-
-    /*プロフィール画像URLを取得*/
-    public String getImageLink(int id) {
-        return profileRepository.getImageLink(id);
-    }
 }

@@ -179,4 +179,17 @@ public class BlogController {
             return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
         }
     }
+
+    /*ブログ記事のランキングを取得する*/
+    @GetMapping("/ranking")
+    public ResponseEntity<ApiResponse<List<Blog>>> getRankingOfTheBlog() {
+        try {
+            List<Blog> ranking = blogService.getRankingOfTheBlog();
+            return ResponseEntity.ok(ApiResponse.success(ranking));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
+    }
 }

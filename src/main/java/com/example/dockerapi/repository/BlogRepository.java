@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository; //Springに「このクラス�
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
 
-
 @Repository
 public class BlogRepository {
 
@@ -209,13 +208,37 @@ public class BlogRepository {
     }
 
     /*指定したコメントを削除する*/
-    public List<Comment> deleteCommentById(int id, int blogId) {
+    public List<Comment> deleteCommentById(int blogId, int commentId) {
       String sql = """
           UPDATE comments
           SET deleted_at = NOW()
           WHERE id = ?
           """;
-      jdbcTemplate.update(sql, id);
+      jdbcTemplate.update(sql, commentId);
       return getCommentsOfTheBlog(blogId, 10, 0);
+    }
+
+    /*ブログ記事のランキングを取得する*/
+    public List<Blog> getRankingOfTheBlog() {
+      String sql = """
+          SELECT blogs.id, blogs.talent_id, blogs.title, blogs.text, blogs.created_at, blogs.updated_at, blogs.deleted_at
+          FROM blogs
+          INNER JOIN ranking 
+          ON blogs.id = ranking.blog_id
+          WHERE blogs.deleted_at IS NULL
+          ORDER BY `rank` ASC
+          """;
+      
+      RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
+          rs.getInt("id"),
+          rs.getInt("talent_id"),
+          rs.getString("title"),
+          rs.getString("text"),
+          rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
+          rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null,
+          rs.getTimestamp("deleted_at") != null ? rs.getTimestamp("deleted_at").toLocalDateTime() : null
+      );
+
+      return jdbcTemplate.query(sql, mapper);
     }
 }

@@ -66,8 +66,14 @@ public class BlogService {
     public int updateComment(String text, int commentId) {
         return blogRepository.updateComment(text, commentId);
     }
+
     /*指定したコメントを削除する*/
     public List<Comment> deleteCommentById(int id, int comment_id) {
         return blogRepository.deleteCommentById(id, comment_id);
+    }
+
+    /*ブログ記事のランキングを取得する*/
+    public List<Blog> getRankingOfTheBlog() {
+        return blogRepository.getRankingOfTheBlog();
     }
 }

@@ -14,6 +14,7 @@ const textInput = document.getElementById('text');
 const pagination = document.getElementById('pagination');
 const paginationList = pagination.querySelector('ul');
 const appearanceContent = document.getElementById('appearanceContent');
+const rankingContent = document.getElementById('rankingContent');
 
 let currentPage = 1;
 let totalPages = 1;
@@ -23,6 +24,7 @@ let isEditMode = false;
 document.addEventListener('DOMContentLoaded', () => {
 	loadblogList();
 	loadappearances();
+	loadRanking();
 
 	// イベントリスナー
 	newblogBtn.addEventListener('click', showNewblogForm);
@@ -333,7 +335,7 @@ function displayappearances(appearances) {
 			return `
         <div class="appearance-item mb-3 pb-3 border-bottom">
           <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="fw-bold mb-0 small">${escapeHtml(appearance.title || '')}</h6>
+            <h6 class="fw-bold mb-0 small" onclick="window.location.href='appearance.html?id=${appearance.id}'" style="cursor: pointer; color: #0d6efd;">${escapeHtml(appearance.title || '')}</h6>
           </div>
           <div class="text-muted">
             <i class="bi bi-calendar3 me-1"></i>
@@ -372,4 +374,75 @@ function formatDate(dateString) {
 		hour: '2-digit',
 		minute: '2-digit',
 	});
+}
+
+// ランキングを取得
+async function loadRanking() {
+	try {
+		const response = await fetch(`${API_BASE}/ranking`);
+		if (!response.ok) {
+			throw new Error('ランキングの取得に失敗しました');
+		}
+		const apiResponse = await response.json();
+		
+		// ApiResponse.data からランキングリストを取得
+		const rankings = apiResponse.data || [];
+		
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+		
+		displayRanking(rankings);
+	} catch (error) {
+		rankingContent.innerHTML = `
+      <div class="alert alert-warning" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> ランキングを読み込めませんでした
+      </div>
+    `;
+		console.error('Error loading ranking:', error);
+	}
+}
+
+// ランキングを表示
+function displayRanking(rankings) {
+	if (!rankings || rankings.length === 0) {
+		rankingContent.innerHTML = `
+      <div class="text-muted">
+        <i class="bi bi-trophy fs-4 d-block mb-2"></i>
+        <p class="small mb-0">ランキングデータがありません</p>
+      </div>
+    `;
+		return;
+	}
+
+	// 上位5件まで表示（APIから既にソート済み）
+	const topRankings = rankings.slice(0, 5);
+
+	const html = topRankings
+		.map((blog, index) => {
+			const rank = index + 1;
+			const rankIcon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}位`;
+			const formattedDate = formatDate(blog.createdAt);
+			return `
+        <div class="ranking-item mb-3 pb-3 border-bottom">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center">
+              <span class="badge bg-warning text-dark me-2">${rankIcon}</span>
+              <h6 class="fw-bold mb-0 small" style="cursor: pointer;" onclick="window.location.href='detail.html?id=${blog.id}'">${escapeHtml(blog.title || '')}</h6>
+            </div>
+          </div>
+          <div class="text-muted">
+            <i class="bi bi-calendar3 me-1"></i>
+            <small>${formattedDate}</small>
+          </div>
+        </div>
+      `;
+		})
+		.join('');
+
+	rankingContent.innerHTML = `
+    <div class="ranking-list text-start">
+      ${html}
+    </div>
+  `;
 }
