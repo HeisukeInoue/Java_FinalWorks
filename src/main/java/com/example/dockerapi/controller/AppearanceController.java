@@ -53,20 +53,20 @@ public class AppearanceController {
     }
 
     /*タレント出演情報を投稿する*/
-@PostMapping
-public ResponseEntity<ApiResponse<String>> postNewAppearance(@RequestBody AppearanceRequest request) {
-    try {
-        Date date = request.getDate();
-        String title = request.getTitle();
-        String text = request.getText();
-        appearanceService.postNewAppearance(date, title, text);
-        return ResponseEntity.status(201).body(ApiResponse.success("出演情報を登録しました"));
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(500)
-            .body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+    @PostMapping
+    public ResponseEntity<ApiResponse<String>> postNewAppearance(@RequestBody AppearanceRequest request) {
+        try {
+            Date date = request.getDate();
+            String title = request.getTitle();
+            String text = request.getText();
+            appearanceService.postNewAppearance(date, title, text);
+            return ResponseEntity.status(201).body(ApiResponse.success("出演情報を登録しました"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                .body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
+        }
     }
-}
 
     /*出演情報を編集する*/
     @PutMapping("/{id}")

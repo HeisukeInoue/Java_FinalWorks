@@ -57,18 +57,6 @@ public class BlogController {
         }
     }
 
-    /*新着順に5件ブログ記事を取得する*/
-    @GetMapping("/recommend")
-    public ResponseEntity<ApiResponse<List<Blog>>> getRecentFiveBlogs(){
-        try {
-            List<Blog> result = blogService.getRecentFiveBlogs();
-            return ResponseEntity.ok(ApiResponse.success(result));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(ApiResponse.error("エラーが発生しました: " + e.getMessage()));
-        }
-    }
-
     /*ブログ記事を投稿する*/
     @PostMapping
     public ResponseEntity<ApiResponse<Blog>> postNewBlogs(@RequestBody BlogRequest request) {

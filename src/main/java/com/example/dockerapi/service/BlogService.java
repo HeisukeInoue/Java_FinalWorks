@@ -28,10 +28,6 @@ public class BlogService {
         }
         return new PagedResponse<>(blogs, page, size, totalItems, totalPages);
     }
-
-    public List<Blog> getRecentFiveBlogs() {
-        return blogRepository.getRecentFiveBlogs();
-    }
     
     public Blog postNewBlogs(String blogtitle, String blogtext) {
         return blogRepository.postNewBlogs(blogtitle, blogtext);

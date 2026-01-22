@@ -24,6 +24,7 @@ public class FileController {
     @Autowired
     private ProfileService profileService;
     
+    /*プロフィール画像を更新する*/
     @PutMapping("/{id}/image")
     public ResponseEntity<ApiResponse<Profile>> uploadImage(
             @RequestPart("image_link") MultipartFile file, @PathVariable int id) {

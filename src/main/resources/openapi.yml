@@ -1,0 +1,840 @@
+openapi: 3.0.4
+info:
+  title: Fansite API
+  version: 1.0.0
+
+paths:
+  /api/blogs:
+    get:
+      tags:
+        - blog
+      summary: ブログ記事一覧を取得する
+      description: 新着に10件ずつページネーションして返す
+      operationId: getBlogs
+      parameters:
+        - name: page
+          in: query
+          description: ページ番号
+          required: false
+          schema:
+            type: integer
+            default: 1
+
+        - name: size
+          in: query
+          description: 1ページあたりの件数
+          required: false
+          schema:
+            type: integer
+            default: 10
+
+      responses:
+        '200':
+          description: 一覧取得成功
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BlogListResponse'
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    post:
+      tags:
+        - blog
+      summary: ブログ記事を投稿する
+      operationId: postNewBlogs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogRequest'
+
+      responses:
+        '200':
+          description: 記事投稿成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+        
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+                
+
+
+  /api/blogs/{id}:
+    get:
+      tags:
+        - blog
+      summary: ブログ記事を個別に取得する
+      description: 指定されたIDで個別ブログ記事を取得する
+      operationId: getBlogById
+      parameters:
+        - name: id
+          in: path
+          description: ブログID
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 記事取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "ブログが見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    put:
+      tags:
+        - blog
+      summary: 個別にブログ記事を更新する
+      operationId: updateBlogs
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogRequest'
+
+      responses:
+        '200':
+          description: ブログ更新成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blog'
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "ブログが見つかりません"
+        
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    delete:
+      tags:
+        - blog
+      summary: 個別にブログ記事を削除する
+      operationId: deleteBlogById
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: ブログ削除成功
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "ブログが見つかりません"
+        
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+  /api/blogs/{id}/comments:
+    get:
+      tags:
+        - blog
+      summary: ブログ記事に寄せられたコメントを取得する
+      operationId: getCommentsOfTheBlog
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: ランキング取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    post:
+      tags:
+        - blog
+      summary: ブログ記事にコメントを投稿する
+      operationId: postNewComment
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentRequest'
+
+      responses:
+        '200':
+          description: コメント投稿成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+  
+  /api/blogs/{id}/comments/{commentId}:
+    put:
+      tags:
+        - blog
+      summary: コメントを個別に更新する
+      operationId: updateComment
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+
+        - name: commentId
+          in: path
+          description: コメントid
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentRequest'
+
+      responses:
+        '200':
+          description: コメント更新成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "コメントを編集しました" 
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "コメントが見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    delete:
+      tags:
+        - blog
+      summary: コメントを個別に削除する
+      operationId: deleteCommentById
+      parameters:
+        - name: id
+          in: path
+          description: ブログid
+          required: true
+          schema:
+            type: integer
+
+        - name: commentId
+          in: path
+          description: コメントid
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: コメント削除成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "コメントが見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+                              
+
+  /api/blogs/ranking:
+    get:
+      tags:
+        - blog
+      summary: ブログ記事のランキングを取得する
+      description: コメント数の多い順にブログ記事を5件返す
+      operationId: getRankingOfTheBlog
+
+      responses:
+        '200':
+          description: ランキング取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ranking'
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+  /api/appearance:
+    get:
+      tags:
+        - appearance
+      summary: タレントの出演情報一覧を取得する
+      operationId: getAllAppearance
+
+      responses:
+        '200':
+          description: 出演情報取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appearance'
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    post:
+      tags:
+        - appearance
+      summary: 出演情報を投稿する
+      operationId: postNewAppearance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppearanceRequest'
+
+      responses:
+        '200':
+          description: 投稿成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "出演情報を登録しました"          
+        
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+
+  /api/appearance/{id}:
+    get:
+      tags:
+        - appearance
+      summary: 出演情報を個別に取得する
+      operationId: getBlogetAppearanceDetail
+      parameters:
+        - name: id
+          in: path
+          description: 出演情報ID
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 記事取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppearanceDetail'
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "出演情報が見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    put:
+      tags:
+        - appearance
+      summary: 出演情報を個別に更新する
+      operationId: updateAppearance
+      parameters:
+        - name: id
+          in: path
+          description: 出演情報ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppearanceRequest'
+
+      responses:
+        '200':
+          description: 記事更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppearanceDetail'
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "出演情報が見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+    delete:
+      tags:
+        - appearance
+      summary: 出演情報を個別に削除する
+      operationId: deleteAppearance
+      parameters:
+        - name: id
+          in: path
+          description: 出演情報ID
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 記事削除成功
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "出演情報が見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+  /api/profile/{id}:
+    get:
+      tags:
+        - profile
+      summary: プロフィールを個別に取得する
+      operationId: getProfile
+      parameters:
+        - name: id
+          in: path
+          description: プロフィールID
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 記事取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+                
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "出演情報が見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+  
+  /api/profile/{id}/info:
+    put:
+      tags:
+        - profile
+      summary: プロフィールを個別に更新する
+      operationId: updateProfile
+      parameters:
+        - name: id
+          in: path
+          description: プロフィールID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+
+      responses:
+        '200':
+          description: プロフィール取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+                
+
+        '404':
+          description: 不正なID入力
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "タレントが見つかりません"
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "エラーが発生しました"
+
+  /api/profile/{id}/image:
+    put:
+      tags:
+        - profile
+      summary: プロフィール画像を更新する
+      operationId: uploadImage
+      parameters:
+        - name: id
+          in: path
+          description: プロフィールID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              format: binary
+
+      responses:
+        '200':
+          description: 画像更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+        '500':
+          description: その他エラー
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "ファイルアップロードに失敗しました" 
+
+components:
+  schemas:
+    Blog:
+      type: object
+      properties:
+        id:
+          type: integer
+        talent_id:
+          type: integer
+        title:
+          type: string
+        text:
+          type: string
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+        deleted_at:
+          type: string
+          format: date
+
+    BlogListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Blog'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+
+    BlogRequest: #ブログ投稿リクエストの型
+      type: object
+      properties:
+        title:
+          type: string   
+        text:
+          type: string
+
+    Comment:
+      type: object
+      properties: 
+        id: 
+          type: integer
+        blog_id: 
+          type: integer
+        created_by:
+          type: string
+        text: 
+          type: string
+        created_at:
+          type: string
+          format: date
+        updated_at: 
+          type: string
+          format: date
+
+    CommentRequest:
+      type: object
+      properties: 
+        text: 
+          type: string
+        created_by:
+          type: string
+
+    Profile:
+      type: object
+      properties:
+        id: 
+          type: integer
+        image_link: 
+          type: string
+        name:
+          type: string
+        age: 
+          type: integer
+        from:
+          type: string
+        height: 
+          type: integer
+        hobby: 
+          type: string        
+        created_at:
+          type: string
+          format: date      
+        updated_at: 
+          type: string
+          format: date
+    
+    Appearance:
+      type: object
+      properties:
+        id: 
+          type: integer
+        talent_id: 
+          type: integer
+        date:
+          type: string
+          format: date
+        title: 
+          type: string
+        created_at:
+          type: string
+          format: date          
+        updated_at: 
+          type: string
+          format: date          
+
+    AppearanceDetail:
+      type: object
+      properties:
+        id: 
+          type: integer
+        talent_id: 
+          type: integer
+        date:
+          type: string
+          format: date
+        title: 
+          type: string
+        text:
+          type: string
+        created_at:
+          type: string
+          format: date          
+        updated_at: 
+          type: string
+          format: date 
+
+    AppearanceRequest:
+      type: object
+      properties:
+        date: 
+          type: string
+          format: date 
+        title: 
+          type: string
+        text:
+          type: string
+
+    Ranking:
+      type: object
+      properties:
+        id: 
+          type: integer
+        rank: 
+          type: integer
+        blog_id:
+          type: integer
+        comment_count: 
+          type: integer
+        created_at:
+          type: string
+          format: date          
+        updated_at: 
+          type: string
+          format: date          
+        deleted_at: 
+          type: string
+          format: date

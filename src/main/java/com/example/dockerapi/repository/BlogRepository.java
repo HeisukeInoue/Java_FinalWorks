@@ -119,29 +119,6 @@ public class BlogRepository {
       return jdbcTemplate.update(sql, id);
     }
 
-    /*レコメンド機能：新着順に5件ブログ記事を取得する*/
-    public List<Blog> getRecentFiveBlogs() {
-      String sql = """
-          SELECT id, talent_id, title, text, created_at, updated_at, deleted_at
-          FROM blogs
-          WHERE deleted_at IS NULL
-          ORDER BY created_at DESC
-          LIMIT 5
-          """;
-
-      RowMapper<Blog> mapper = (rs, rowNum) -> new Blog(
-          rs.getInt("id"),
-          rs.getInt("talent_id"),
-          rs.getString("title"),
-          rs.getString("text"),
-          rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
-          rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null,
-          rs.getTimestamp("deleted_at") != null ? rs.getTimestamp("deleted_at").toLocalDateTime() : null
-      );
-      
-      return jdbcTemplate.query(sql, mapper);    
-    }
-
     /**以下ブログコメント機能**/
     /*指定したブログ記事のコメント一覧を取得する*/
     public List<Comment> getCommentsOfTheBlog(int id, int pageSize, int offSet) {
