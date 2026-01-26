@@ -57,7 +57,7 @@ public class ProfileRepository {
         };
     }
 
-    /*個別にプロフィール情報を編集する(画像以外)*/
+    /*個別にプロフィール情報を更新する(画像以外)*/
     public int updateProfile(String image_link, String name, int age, String from, int height, String hobby, int id) {
         String sql = """
             UPDATE talents
