@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import com.example.dockerapi.model.Appearance;
 import com.example.dockerapi.model.AppearanceDetail;
 
@@ -18,8 +19,9 @@ import com.example.dockerapi.model.AppearanceDetail;
 @Import(AppearanceRepository.class)
 @Sql(scripts = {
     "/testdata/profile_test_data.sql",
-    "/testdata/appearances_test_data.sql"  
-})
+    "/testdata/appearances_test_data.sql"},
+    executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+
 class AppearanceRepositoryTest {
 
     @Autowired
