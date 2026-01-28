@@ -41,7 +41,7 @@ public class FileUploadService {
 
             String wholeFileName = "https://java-finalwork.s3.ap-southeast-2.amazonaws.com/" + fileName;
 
-			return wholeFileName;
+			return wholeFileName; // アップロードしたファイルのURLを返す
 		} catch (S3Exception e) {
 			e.printStackTrace();
 			throw new IOException("S3アップロードに失敗しました: " + e.getMessage(), e);
