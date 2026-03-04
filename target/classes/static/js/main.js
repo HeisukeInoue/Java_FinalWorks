@@ -1,9 +1,13 @@
 // API ベースURL
 const API_BASE = '/api/blogs';
+const SEARCH_API = '/api/search';
 
 // DOM要素
 const blogList = document.getElementById('blogList');
 const blogForm = document.getElementById('blogForm');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearSearchBtn = document.getElementById('clearSearchBtn');
 const blogFormElement = document.getElementById('blogFormElement');
 const newblogBtn = document.getElementById('newblogBtn');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -19,6 +23,7 @@ const rankingContent = document.getElementById('rankingContent');
 let currentPage = 1;
 let totalPages = 1;
 let isEditMode = false;
+let isSearchMode = false;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,7 +35,76 @@ document.addEventListener('DOMContentLoaded', () => {
 	newblogBtn.addEventListener('click', showNewblogForm);
 	cancelBtn.addEventListener('click', hideblogForm);
 	blogFormElement.addEventListener('submit', handleFormSubmit);
+	searchBtn.addEventListener('click', handleSearch);
+	clearSearchBtn.addEventListener('click', handleClearSearch);
+	searchInput.addEventListener('keypress', (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			handleSearch();
+		}
+	});
 });
+
+// 検索実行
+async function handleSearch() {
+	const query = searchInput.value.trim();
+	if (!query) {
+		alert('検索キーワードを入力してください');
+		return;
+	}
+	isSearchMode = true;
+	clearSearchBtn.style.display = 'inline-block';
+	await loadSearchResults(query);
+}
+
+// 検索クリア
+function handleClearSearch() {
+	isSearchMode = false;
+	searchInput.value = '';
+	clearSearchBtn.style.display = 'none';
+	pagination.style.display = 'none';
+	loadblogList();
+}
+
+// 検索結果を取得
+async function loadSearchResults(query) {
+	try {
+		blogList.innerHTML = `
+      <div class="col-12">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">読み込み中...</span>
+          </div>
+          <p class="mt-2 text-muted">検索中...</p>
+        </div>
+      </div>
+    `;
+		const response = await fetch(`${SEARCH_API}?query=${encodeURIComponent(query)}`);
+
+		if (!response.ok) {
+			throw new Error('検索に失敗しました');
+		}
+
+		const apiResponse = await response.json();
+
+		if (apiResponse.error) {
+			throw new Error(apiResponse.error);
+		}
+
+		const blogs = apiResponse.data || [];
+		displayblogList({ items: blogs });
+		pagination.style.display = 'none';
+	} catch (error) {
+		blogList.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle"></i> エラー: ${error.message}
+        </div>
+      </div>
+    `;
+		console.error('Error searching:', error);
+	}
+}
 
 // ブログ一覧を取得
 async function loadblogList() {
@@ -62,7 +136,9 @@ async function loadblogList() {
 		
 		totalPages = data.totalPages || 1;
 		displayblogList(data);
-		displayPagination(data);
+		if (!isSearchMode) {
+			displayPagination(data);
+		}
 	} catch (error) {
 		blogList.innerHTML = `
       <div class="col-12">
@@ -79,14 +155,15 @@ async function loadblogList() {
 function displayblogList(data) {
 	// PagedResponse の items からブログ一覧を取得
 	const blogs = data.items || data.blogs || [];
-	
+	const emptyMessage = isSearchMode ? '検索結果がありません' : 'ブログがありません';
+
 	if (blogs.length === 0) {
 		blogList.innerHTML = `
       <div class="col-12">
         <div class="card shadow-sm">
           <div class="card-body text-center py-5">
-            <i class="bi bi-inbox fs-1 text-muted"></i>
-            <p class="mt-3 text-muted">ブログがありません</p>
+            <i class="bi bi-${isSearchMode ? 'search' : 'inbox'} fs-1 text-muted"></i>
+            <p class="mt-3 text-muted">${emptyMessage}</p>
           </div>
         </div>
       </div>
@@ -264,6 +341,9 @@ async function handleFormSubmit(e) {
 		}
 
 		hideblogForm();
+		isSearchMode = false;
+		searchInput.value = '';
+		clearSearchBtn.style.display = 'none';
 		loadblogList();
 		alert(isEditMode ? 'ブログを更新しました' : 'ブログを投稿しました');
 	} catch (error) {

@@ -77,6 +77,30 @@
 				</div>
 			</div>
 
+			<!-- 検索ボックス -->
+			<div class="card shadow-sm mb-4">
+				<div class="card-body p-3">
+					<div class="input-group">
+						<span class="input-group-text bg-white border-end-0">
+							<i class="bi bi-search text-muted"></i>
+						</span>
+						<input
+							type="text"
+							id="searchInput"
+							class="form-control border-start-0"
+							placeholder="ブログを検索（タイトル・本文）"
+							aria-label="検索"
+						/>
+						<button id="searchBtn" class="btn btn-primary" type="button">
+							<i class="bi bi-search me-1"></i>検索
+						</button>
+						<button id="clearSearchBtn" class="btn btn-outline-secondary" type="button" style="display: none;">
+							クリア
+						</button>
+					</div>
+				</div>
+			</div>
+
 			<!-- メインコンテンツエリア -->
 			<div class="row">
 				<!-- 左側：ブログ一覧 -->
