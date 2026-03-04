@@ -1,3 +1,9 @@
+/*外部キー制約を無効化してテーブルを削除（依存関係の逆順で削除）*/
+SET REFERENTIAL_INTEGRITY FALSE;
+DROP TABLE IF EXISTS appearances;
+DROP TABLE IF EXISTS talents;
+SET REFERENTIAL_INTEGRITY TRUE;
+
 create table talents (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     image_link VARCHAR(500) NOT NULL,

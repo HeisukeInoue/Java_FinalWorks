@@ -6,8 +6,6 @@ services:
     container_name: spring_app
     ports:
       - '8080:8080'
-    env_file:
-      - .env
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/Java_Final_Works?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Tokyo
       SPRING_DATASOURCE_USERNAME: root

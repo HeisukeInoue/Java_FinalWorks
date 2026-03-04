@@ -1,3 +1,10 @@
+/*外部キー制約を無効化してテーブルを削除*/
+SET REFERENTIAL_INTEGRITY FALSE;
+DROP TABLE IF EXISTS ranking;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS blogs;
+SET REFERENTIAL_INTEGRITY TRUE;
+
 /*ブログテーブル*/
 CREATE TABLE blogs (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -42,6 +49,7 @@ VALUES (10, 1001, 'テストタイトル1', 'テスト本文1', CURRENT_TIMESTAM
 INSERT INTO blogs (id, talent_id, title, text, created_at, updated_at, deleted_at)
 VALUES (11, 1001, 'テストタイトル1', 'テスト本文1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL);
 
+/*AUTO_INCREMENTをリセット（H2用）*/
 ALTER TABLE blogs ALTER COLUMN id RESTART WITH 12;
 
 /*コメントテーブル*/
@@ -98,6 +106,7 @@ VALUES (13, 1, 'テストコメント13', 'テストユーザー13', CURRENT_TIM
 INSERT INTO comments (id, blog_id, text, created_by, created_at, updated_at, deleted_at)
 VALUES (14, 1, 'テストコメント14', 'テストユーザー14', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL);
 
+/*AUTO_INCREMENTをリセット（H2用）*/
 ALTER TABLE comments ALTER COLUMN id RESTART WITH 15;
 
 /*ランキングテーブル*/

@@ -1,3 +1,8 @@
+/*外部キー制約を無効化してテーブルを削除*/
+SET REFERENTIAL_INTEGRITY FALSE;
+DROP TABLE IF EXISTS appearances;
+SET REFERENTIAL_INTEGRITY TRUE;
+
 CREATE TABLE appearances (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     talent_id INT NOT NULL,
@@ -16,4 +21,5 @@ INSERT INTO appearances (id, talent_id, date, title, text, created_at, updated_a
 
 INSERT INTO appearances (id, talent_id, date, title, text, created_at, updated_at, deleted_at) VALUES (3, 1, '2024-01-01', 'テストタイトル3', 'テスト本文3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL);
 
+/*AUTO_INCREMENTをリセット（H2用）*/
 ALTER TABLE appearances ALTER COLUMN id RESTART WITH 4;

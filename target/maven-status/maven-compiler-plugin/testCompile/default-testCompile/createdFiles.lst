@@ -1,0 +1,6 @@
+com/example/dockerapi/repository/ProfileRepositoryTest.class
+com/example/dockerapi/controller/BlogControllerTest.class
+com/example/dockerapi/repository/BlogRepositoryTest.class
+com/example/dockerapi/service/AppearanceServiceTest.class
+com/example/dockerapi/repository/AppearanceRepositoryTest.class
+com/example/dockerapi/service/BlogServiceTest.class

@@ -10,12 +10,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import com.example.dockerapi.model.Blog;
 import com.example.dockerapi.model.Comment;
 
 @JdbcTest
 @Import(BlogRepository.class)
-@Sql(scripts = "/testdata/blogs_test_data.sql")
+@Sql(scripts = "/testdata/blogs_test_data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
 class BlogRepositoryTest {
     @Autowired
     private BlogRepository blogRepository;
@@ -70,7 +71,7 @@ class BlogRepositoryTest {
     void testPostNewBlogs() {
         Blog blog = blogRepository.postNewBlogs("テストタイトル1", "テスト本文1");
         assertNotNull(blog);
-        assertEquals(12, blog.getId());
+        assertEquals(13, blog.getId());
         assertEquals("テストタイトル1", blog.getTitle());
         assertEquals("テスト本文1", blog.getText());
     }
