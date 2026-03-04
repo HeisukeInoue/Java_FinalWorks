@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: spring_app
+    env_file: # これを追加
+      - .env
     ports:
       - '8080:8080'
     environment:
@@ -38,6 +40,7 @@ services:
         echo '  JUnit テスト実行開始';
         echo '========================================';
         echo '';
+        rm -rf /app/target;
         mvn clean test -Dspring.datasource.url='jdbc:mysql://mysql:3306/Java_Final_Works?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Tokyo' || true;
         echo '';
         echo '========================================';
