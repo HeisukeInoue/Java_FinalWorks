@@ -27,7 +27,16 @@ let isSearchMode = false;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
-	loadblogList();
+	const urlParams = new URLSearchParams(window.location.search);
+	const initialQuery = urlParams.get('query');
+	if (initialQuery) {
+		searchInput.value = initialQuery;
+		isSearchMode = true;
+		clearSearchBtn.style.display = 'inline-block';
+		loadSearchResults(initialQuery);
+	} else {
+		loadblogList();
+	}
 	loadappearances();
 	loadRanking();
 
@@ -55,6 +64,7 @@ async function handleSearch() {
 	isSearchMode = true;
 	clearSearchBtn.style.display = 'inline-block';
 	await loadSearchResults(query);
+	history.pushState({}, '', window.location.pathname + '?query=' + encodeURIComponent(query));
 }
 
 // 検索クリア
@@ -63,6 +73,7 @@ function handleClearSearch() {
 	searchInput.value = '';
 	clearSearchBtn.style.display = 'none';
 	pagination.style.display = 'none';
+	history.pushState({}, '', window.location.pathname);
 	loadblogList();
 }
 
