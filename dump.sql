@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.44, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.45, for Linux (x86_64)
 --
 -- Host: localhost    Database: Java_Final_Works
 -- ------------------------------------------------------
--- Server version	8.0.44
+-- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,9 +29,9 @@ CREATE TABLE `BATCH_JOB_EXECUTION` (
   `CREATE_TIME` datetime(6) NOT NULL,
   `START_TIME` datetime(6) DEFAULT NULL,
   `END_TIME` datetime(6) DEFAULT NULL,
-  `STATUS` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `EXIT_CODE` varchar(2500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `EXIT_MESSAGE` varchar(2500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `STATUS` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `EXIT_CODE` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `EXIT_MESSAGE` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `LAST_UPDATED` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`JOB_EXECUTION_ID`),
   KEY `JOB_INST_EXEC_FK` (`JOB_INSTANCE_ID`),
@@ -58,8 +58,8 @@ DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_CONTEXT`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_JOB_EXECUTION_CONTEXT` (
   `JOB_EXECUTION_ID` bigint NOT NULL,
-  `SHORT_CONTEXT` varchar(2500) COLLATE utf8mb4_general_ci NOT NULL,
-  `SERIALIZED_CONTEXT` text COLLATE utf8mb4_general_ci,
+  `SHORT_CONTEXT` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `SERIALIZED_CONTEXT` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`JOB_EXECUTION_ID`),
   CONSTRAINT `JOB_EXEC_CTX_FK` FOREIGN KEY (`JOB_EXECUTION_ID`) REFERENCES `BATCH_JOB_EXECUTION` (`JOB_EXECUTION_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -84,10 +84,10 @@ DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_PARAMS`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_JOB_EXECUTION_PARAMS` (
   `JOB_EXECUTION_ID` bigint NOT NULL,
-  `PARAMETER_NAME` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `PARAMETER_TYPE` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `PARAMETER_VALUE` varchar(2500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `IDENTIFYING` char(1) COLLATE utf8mb4_general_ci NOT NULL,
+  `PARAMETER_NAME` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PARAMETER_TYPE` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PARAMETER_VALUE` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `IDENTIFYING` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   KEY `JOB_EXEC_PARAMS_FK` (`JOB_EXECUTION_ID`),
   CONSTRAINT `JOB_EXEC_PARAMS_FK` FOREIGN KEY (`JOB_EXECUTION_ID`) REFERENCES `BATCH_JOB_EXECUTION` (`JOB_EXECUTION_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_SEQ`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_JOB_EXECUTION_SEQ` (
   `ID` bigint NOT NULL,
-  `UNIQUE_KEY` char(1) COLLATE utf8mb4_general_ci NOT NULL,
+  `UNIQUE_KEY` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -136,8 +136,8 @@ DROP TABLE IF EXISTS `BATCH_JOB_INSTANCE`;
 CREATE TABLE `BATCH_JOB_INSTANCE` (
   `JOB_INSTANCE_ID` bigint NOT NULL,
   `VERSION` bigint DEFAULT NULL,
-  `JOB_NAME` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `JOB_KEY` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
+  `JOB_NAME` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `JOB_KEY` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`JOB_INSTANCE_ID`),
   UNIQUE KEY `JOB_INST_UN` (`JOB_NAME`,`JOB_KEY`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -162,7 +162,7 @@ DROP TABLE IF EXISTS `BATCH_JOB_SEQ`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_JOB_SEQ` (
   `ID` bigint NOT NULL,
-  `UNIQUE_KEY` char(1) COLLATE utf8mb4_general_ci NOT NULL,
+  `UNIQUE_KEY` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -187,12 +187,12 @@ DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION`;
 CREATE TABLE `BATCH_STEP_EXECUTION` (
   `STEP_EXECUTION_ID` bigint NOT NULL,
   `VERSION` bigint NOT NULL,
-  `STEP_NAME` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `STEP_NAME` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `JOB_EXECUTION_ID` bigint NOT NULL,
   `CREATE_TIME` datetime(6) NOT NULL,
   `START_TIME` datetime(6) DEFAULT NULL,
   `END_TIME` datetime(6) DEFAULT NULL,
-  `STATUS` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `STATUS` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `COMMIT_COUNT` bigint DEFAULT NULL,
   `READ_COUNT` bigint DEFAULT NULL,
   `FILTER_COUNT` bigint DEFAULT NULL,
@@ -201,8 +201,8 @@ CREATE TABLE `BATCH_STEP_EXECUTION` (
   `WRITE_SKIP_COUNT` bigint DEFAULT NULL,
   `PROCESS_SKIP_COUNT` bigint DEFAULT NULL,
   `ROLLBACK_COUNT` bigint DEFAULT NULL,
-  `EXIT_CODE` varchar(2500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `EXIT_MESSAGE` varchar(2500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `EXIT_CODE` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `EXIT_MESSAGE` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `LAST_UPDATED` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`STEP_EXECUTION_ID`),
   KEY `JOB_EXEC_STEP_FK` (`JOB_EXECUTION_ID`),
@@ -229,8 +229,8 @@ DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION_CONTEXT`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_STEP_EXECUTION_CONTEXT` (
   `STEP_EXECUTION_ID` bigint NOT NULL,
-  `SHORT_CONTEXT` varchar(2500) COLLATE utf8mb4_general_ci NOT NULL,
-  `SERIALIZED_CONTEXT` text COLLATE utf8mb4_general_ci,
+  `SHORT_CONTEXT` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `SERIALIZED_CONTEXT` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`STEP_EXECUTION_ID`),
   CONSTRAINT `STEP_EXEC_CTX_FK` FOREIGN KEY (`STEP_EXECUTION_ID`) REFERENCES `BATCH_STEP_EXECUTION` (`STEP_EXECUTION_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -255,7 +255,7 @@ DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION_SEQ`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `BATCH_STEP_EXECUTION_SEQ` (
   `ID` bigint NOT NULL,
-  `UNIQUE_KEY` char(1) COLLATE utf8mb4_general_ci NOT NULL,
+  `UNIQUE_KEY` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -281,8 +281,8 @@ CREATE TABLE `appearances` (
   `id` int NOT NULL AUTO_INCREMENT,
   `talent_id` int NOT NULL,
   `date` date NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `text` text COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -310,13 +310,13 @@ DROP TABLE IF EXISTS `blogs`;
 CREATE TABLE `blogs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `talent_id` int NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `text` text COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,7 +325,7 @@ CREATE TABLE `blogs` (
 
 LOCK TABLES `blogs` WRITE;
 /*!40000 ALTER TABLE `blogs` DISABLE KEYS */;
-INSERT INTO `blogs` VALUES (1,1,'<(2)更新>API修正後動作テスト','テストテスト','2026-01-05 01:39:07','2026-01-14 08:49:36',NULL),(2,1,'削除テスト用投稿','この投稿は使いません','2026-01-06 02:05:24',NULL,'2026-01-06 02:41:14'),(3,1,'削除テスト用投稿2','この投稿も使いません','2026-01-07 05:55:17',NULL,NULL),(4,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:03',NULL,NULL),(5,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:07',NULL,NULL),(6,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:08',NULL,NULL),(7,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:42',NULL,NULL),(8,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:43',NULL,NULL),(9,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:43',NULL,NULL),(10,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(11,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(12,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(13,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(14,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(15,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(16,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,NULL),(17,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,NULL),(18,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,'2026-01-15 09:08:04'),(19,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:33:40',NULL,NULL),(20,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:45:20',NULL,NULL),(21,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:45:38',NULL,NULL),(22,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:50:21',NULL,'2026-01-15 09:07:56'),(23,1,'<更新>API修正後動作テスト','テストテスト','2026-01-14 08:01:46','2026-01-14 08:02:48','2026-01-14 08:03:05'),(24,1,'API修正後動作テスト','テストテスト','2026-01-14 08:50:05',NULL,NULL),(25,1,'久しぶりにコンサートに出演します(※2026/1/15更新)','超久々の投稿です！2401年1月1日、25世紀初めを盛大に祝うピアノコンサートを開催します！みなさんぜひ足をお運びください！\n詳細は以下になります↓\n【場所】：地球','2026-01-15 07:37:29','2026-01-19 07:25:59',NULL);
+INSERT INTO `blogs` VALUES (1,1,'<(2)更新>API修正後動作テスト','テストテスト','2026-01-05 01:39:07','2026-01-14 08:49:36',NULL),(2,1,'削除テスト用投稿','この投稿は使いません','2026-01-06 02:05:24',NULL,'2026-01-06 02:41:14'),(3,1,'削除テスト用投稿2','この投稿も使いません','2026-01-07 05:55:17',NULL,NULL),(4,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:03',NULL,NULL),(5,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:07',NULL,NULL),(6,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 06:36:08',NULL,NULL),(7,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:42',NULL,NULL),(8,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:43',NULL,NULL),(9,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:43',NULL,NULL),(10,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(11,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(12,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(13,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(14,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(15,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:44',NULL,NULL),(16,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,NULL),(17,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,NULL),(18,1,'全件取得レスポンス用テスト','この投稿は使いません','2026-01-08 07:12:45',NULL,'2026-01-15 09:08:04'),(19,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:33:40',NULL,NULL),(20,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:45:20',NULL,NULL),(21,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:45:38',NULL,NULL),(22,1,'新規投稿テスト','新規投稿本文です','2026-01-13 03:50:21',NULL,'2026-01-15 09:07:56'),(23,1,'<更新>API修正後動作テスト','テストテスト','2026-01-14 08:01:46','2026-01-14 08:02:48','2026-01-14 08:03:05'),(24,1,'API修正後動作テスト','テストテスト','2026-01-14 08:50:05',NULL,NULL),(25,1,'久しぶりにコンサートに出演します(※2026/1/15更新)','超久々の投稿です！2401年1月1日、25世紀初めを盛大に祝うピアノコンサートを開催します！みなさんぜひ足をお運びください！\n詳細は以下になります↓\n【場所】：地球','2026-01-15 07:37:29','2026-01-19 07:25:59',NULL),(26,1,'aaa','テストテスト更新更新','2026-03-04 08:17:53','2026-03-04 08:18:20',NULL);
 /*!40000 ALTER TABLE `blogs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -339,13 +339,13 @@ DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` int NOT NULL AUTO_INCREMENT,
   `blog_id` int NOT NULL,
-  `created_by` enum('user','talent') COLLATE utf8mb4_general_ci NOT NULL,
-  `text` text COLLATE utf8mb4_general_ci NOT NULL,
+  `created_by` enum('user','talent') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,7 +354,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (1,1,'user','いつも見てます！テストコメントです！','2026-01-05 01:52:23',NULL,'2026-01-15 08:25:25'),(2,1,'user','大ファンです！いつも見てます！','2026-01-15 02:14:28',NULL,NULL),(3,1,'user','大ファンです！いつも見てます！','2026-01-15 02:15:20',NULL,NULL),(4,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:02',NULL,NULL),(5,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:08',NULL,NULL),(6,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:11',NULL,NULL),(7,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:13',NULL,NULL),(8,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:15',NULL,NULL),(9,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:18',NULL,NULL),(10,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:20',NULL,NULL),(11,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:23',NULL,NULL),(12,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:46',NULL,NULL),(13,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:52',NULL,NULL),(14,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:55',NULL,NULL),(15,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:57',NULL,NULL),(16,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:00',NULL,NULL),(17,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:03',NULL,NULL),(18,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:06',NULL,NULL),(19,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:09',NULL,NULL),(20,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:11',NULL,NULL),(21,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:12',NULL,NULL),(22,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:14',NULL,NULL),(23,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:19',NULL,NULL),(24,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:49',NULL,NULL),(25,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:53',NULL,NULL),(26,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:57',NULL,NULL),(27,24,'user','大ファンです！いつも見てます！','2026-01-15 02:18:01',NULL,NULL),(28,1,'user','{\n  \"text\": \"コメント投稿テストです\"\n}','2026-01-15 03:54:15',NULL,NULL),(29,1,'user','コメント投稿テストです','2026-01-15 05:49:18',NULL,NULL),(30,1,'talent','コメント投稿テストです','2026-01-15 05:50:15',NULL,NULL),(31,1,'talent','再改・コメント投稿テストです','2026-01-15 05:52:47','2026-01-15 08:07:30',NULL),(32,1,'talent','コメント投稿テストです','2026-01-15 06:16:07',NULL,NULL),(33,25,'user','スター同士頑張ろう!!','2026-01-15 09:32:04',NULL,NULL),(34,25,'user','大好き!!','2026-01-15 09:37:46',NULL,NULL),(35,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:38',NULL,NULL),(36,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:39',NULL,NULL),(37,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:39',NULL,NULL),(38,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:40',NULL,NULL),(39,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:40',NULL,NULL),(40,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:41',NULL,NULL),(41,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:41',NULL,NULL),(42,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:42',NULL,NULL),(43,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:42',NULL,NULL),(44,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:43',NULL,NULL),(45,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:43',NULL,NULL),(46,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:44',NULL,NULL),(47,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:44',NULL,NULL),(48,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:45',NULL,NULL);
+INSERT INTO `comments` VALUES (1,1,'user','いつも見てます！テストコメントです！','2026-01-05 01:52:23',NULL,'2026-01-15 08:25:25'),(2,1,'user','大ファンです！いつも見てます！','2026-01-15 02:14:28',NULL,NULL),(3,1,'user','大ファンです！いつも見てます！','2026-01-15 02:15:20',NULL,NULL),(4,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:02',NULL,NULL),(5,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:08',NULL,NULL),(6,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:11',NULL,NULL),(7,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:13',NULL,NULL),(8,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:15',NULL,NULL),(9,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:18',NULL,NULL),(10,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:20',NULL,NULL),(11,1,'user','大ファンです！いつも見てます！','2026-01-15 02:16:23',NULL,NULL),(12,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:46',NULL,NULL),(13,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:52',NULL,NULL),(14,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:55',NULL,NULL),(15,4,'user','大ファンです！いつも見てます！','2026-01-15 02:16:57',NULL,NULL),(16,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:00',NULL,NULL),(17,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:03',NULL,NULL),(18,4,'user','大ファンです！いつも見てます！','2026-01-15 02:17:06',NULL,NULL),(19,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:09',NULL,NULL),(20,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:11',NULL,NULL),(21,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:12',NULL,NULL),(22,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:14',NULL,NULL),(23,1,'user','大ファンです！いつも見てます！','2026-01-15 02:17:19',NULL,NULL),(24,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:49',NULL,NULL),(25,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:53',NULL,NULL),(26,24,'user','大ファンです！いつも見てます！','2026-01-15 02:17:57',NULL,NULL),(27,24,'user','大ファンです！いつも見てます！','2026-01-15 02:18:01',NULL,NULL),(28,1,'user','{\n  \"text\": \"コメント投稿テストです\"\n}','2026-01-15 03:54:15',NULL,NULL),(29,1,'user','コメント投稿テストです','2026-01-15 05:49:18',NULL,NULL),(30,1,'talent','コメント投稿テストです','2026-01-15 05:50:15',NULL,NULL),(31,1,'talent','再改・コメント投稿テストです','2026-01-15 05:52:47','2026-01-15 08:07:30',NULL),(32,1,'talent','コメント投稿テストです','2026-01-15 06:16:07',NULL,NULL),(33,25,'user','スター同士頑張ろう!!','2026-01-15 09:32:04',NULL,NULL),(34,25,'user','大好き!!','2026-01-15 09:37:46',NULL,NULL),(35,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:38',NULL,NULL),(36,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:39',NULL,NULL),(37,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:39',NULL,NULL),(38,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:40',NULL,NULL),(39,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:40',NULL,NULL),(40,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:41',NULL,NULL),(41,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:41',NULL,NULL),(42,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:42',NULL,NULL),(43,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:42',NULL,NULL),(44,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:43',NULL,NULL),(45,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:43',NULL,NULL),(46,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:44',NULL,NULL),(47,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:44',NULL,NULL),(48,13,'user','大ファンです！いつも見てます！','2026-01-20 09:21:45',NULL,NULL),(49,25,'user','むにむに','2026-03-04 07:53:42',NULL,NULL);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -368,7 +368,7 @@ DROP TABLE IF EXISTS `main_images`;
 CREATE TABLE `main_images` (
   `id` int NOT NULL AUTO_INCREMENT,
   `talent_id` int NOT NULL,
-  `image_link` text COLLATE utf8mb4_general_ci NOT NULL,
+  `image_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -424,12 +424,12 @@ DROP TABLE IF EXISTS `talents`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `talents` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `image_link` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image_link` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `age` int NOT NULL,
-  `from` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `height` int NOT NULL,
-  `hobby` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `hobby` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -443,13 +443,9 @@ CREATE TABLE `talents` (
 
 LOCK TABLES `talents` WRITE;
 /*!40000 ALTER TABLE `talents` DISABLE KEYS */;
-INSERT INTO `talents` VALUES (1,'https://java-finalwork.s3.ap-southeast-2.amazonaws.com/mainimages.png','井上平之',27,'岡山県',183,'ピアノ','2026-01-05 01:34:42','2026-01-19 07:25:38',NULL);
+INSERT INTO `talents` VALUES (1,'https://java-finalwork.s3.ap-southeast-2.amazonaws.com/mainimages.png','井上平之',27,'岡山県',183,'ピアノ','2026-01-05 01:34:42','2026-03-04 08:04:32',NULL);
 /*!40000 ALTER TABLE `talents` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'Java_Final_Works'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -460,4 +456,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-21 11:19:24
+-- Dump completed on 2026-03-05 14:40:45
