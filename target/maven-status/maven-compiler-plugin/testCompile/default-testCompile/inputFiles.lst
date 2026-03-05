@@ -1,9 +1,0 @@
-/app/src/test/java/com/example/dockerapi/controller/AppearanceControllerTest.java
-/app/src/test/java/com/example/dockerapi/controller/BlogControllerTest.java
-/app/src/test/java/com/example/dockerapi/repository/AppearanceRepositoryTest.java
-/app/src/test/java/com/example/dockerapi/repository/BlogRepositoryTest.java
-/app/src/test/java/com/example/dockerapi/repository/ProfileRepositoryTest.java
-/app/src/test/java/com/example/dockerapi/service/AppearanceServiceTest.java
-/app/src/test/java/com/example/dockerapi/service/BlogServiceTest.java
-/app/src/test/java/com/example/dockerapi/service/FileUploadServiceTest.java
-/app/src/test/java/com/example/dockerapi/service/ProfileServiceTest.java
