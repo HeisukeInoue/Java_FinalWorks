@@ -42,7 +42,7 @@ public class FileController {
             profileService.updateImageLink(imageUrl, id);
 
             /*更新後のプロフィールを取得する*/
-            Profile updatedProfile = profileService.getProfile(id);
+            Profile updatedProfile = profileService.getProfile(1);
             return ResponseEntity.ok(ApiResponse.success(updatedProfile));
         } catch (IOException e) {
             e.printStackTrace();

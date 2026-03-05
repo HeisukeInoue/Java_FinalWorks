@@ -74,6 +74,6 @@ public class ProfileRepository {
             SET image_link = ?, updated_at = NOW()
             WHERE id = ? AND deleted_at IS NULL
             """;
-        return jdbcTemplate.update(sql, url, id);
+        return jdbcTemplate.update(sql, id, url);
     }
 }

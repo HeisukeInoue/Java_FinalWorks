@@ -5,3 +5,6 @@ target/
 .env
 .env.local
 .env.*.local
+
+# コードリーディング解答（講師用・提出物に含めない）
+CODE_READING_ANSWER.md
